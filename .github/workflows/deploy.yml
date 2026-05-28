@@ -47,7 +47,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # 기존 프로세스 종료
-            PID=$(pgrep -f "couzl.war" || true)
+            PID=$(pgrep -f "java" || true)
             if [ -n "$PID" ]; then
               echo "Stopping PID $PID ..."
               kill "$PID"
