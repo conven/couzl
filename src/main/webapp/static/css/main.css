@@ -1,0 +1,469 @@
+/* ===== wrap ===== */
+.wrap {
+    background-color: var(--color-white);
+    padding-bottom: 60px;
+}
+
+/* ===== 헤더 ===== */
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background-color: var(--color-white);
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.header-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.location-arrow {
+    font-size: 11px;
+    color: var(--color-text-sub);
+}
+
+.header-logo {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--color-text);
+    letter-spacing: 1px;
+}
+
+.btn-bell {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+}
+
+/* ===== 검색바 ===== */
+.search-wrap {
+    padding: 10px 16px 4px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color-bg);
+    border-radius: 24px;
+    padding: 11px 16px;
+}
+
+.search-bar input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    width: 100%;
+    cursor: pointer;
+}
+
+/* ===== 배너 ===== */
+.banner-section {
+    padding: 12px 16px 0;
+    margin-bottom: 20px;
+}
+
+.banner-track {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-radius: 14px;
+}
+
+.banner-track::-webkit-scrollbar { display: none; }
+
+.banner-card {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    height: 160px;
+    padding: 22px 20px;
+    box-sizing: border-box;
+}
+
+.banner-sub {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.banner-title {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.4;
+    margin-bottom: 14px;
+}
+
+.banner-cta {
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+}
+
+.banner-yellow { background-color: var(--color-primary); color: var(--color-text); }
+.banner-dark   { background-color: #1A1A1A; color: #FFFFFF; }
+.banner-red    { background-color: #FF6B6B; color: #FFFFFF; }
+
+.banner-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #DDDDDD;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dot.active {
+    width: 18px;
+    border-radius: 3px;
+    background-color: var(--color-text);
+}
+
+/* ===== 카테고리 ===== */
+.category-section {
+    margin-bottom: 24px;
+}
+
+.category-bar {
+    display: flex;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding: 4px 16px;
+    gap: 8px;
+}
+
+.category-bar::-webkit-scrollbar { display: none; }
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background-color: var(--color-bg);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.category-item.active {
+    background-color: var(--color-primary);
+}
+
+.cat-icon  { font-size: 22px; line-height: 1; }
+
+.cat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-sub);
+    white-space: nowrap;
+}
+
+.category-item.active .cat-label {
+    color: var(--color-text);
+}
+
+/* ===== 섹션 공통 ===== */
+.main-section {
+    padding: 0 16px;
+    margin-bottom: 28px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.section-more {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+/* ===== 가맹점 그리드 ===== */
+.shop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.shop-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background-color: var(--color-white);
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.shop-card:active { transform: scale(0.97); }
+
+.shop-image {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+}
+
+.shop-info {
+    padding: 10px 12px 12px;
+}
+
+.shop-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text);
+    background-color: var(--color-primary);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-bottom: 5px;
+}
+
+.shop-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.shop-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--color-text-sub);
+    margin-bottom: 6px;
+}
+
+.shop-rating { color: #F5A623; }
+
+.shop-coupon {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+/* ===== 쿠폰 카드 ===== */
+.coupon-scroll {
+    display: flex;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    gap: 12px;
+    padding-bottom: 4px;
+}
+
+.coupon-scroll::-webkit-scrollbar { display: none; }
+
+.coupon-card {
+    flex: 0 0 148px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background-color: var(--color-white);
+}
+
+.coupon-upper {
+    padding: 14px 14px 12px;
+    background-color: var(--color-primary);
+}
+
+.coupon-shop-name {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text);
+    opacity: 0.7;
+    margin-bottom: 5px;
+}
+
+.coupon-benefit {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1.35;
+}
+
+/* 쿠폰 티켓 구분선 */
+.coupon-divider {
+    height: 1px;
+    margin: 0 12px;
+    border-top: 1.5px dashed #D0D0D0;
+    position: relative;
+}
+
+.coupon-divider::before,
+.coupon-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background-color: var(--color-bg);
+    border-radius: 50%;
+}
+
+.coupon-divider::before { left: -19px; }
+.coupon-divider::after  { right: -19px; }
+
+.coupon-lower {
+    padding: 10px 14px 14px;
+}
+
+.coupon-expire {
+    display: block;
+    font-size: 10px;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.btn-receive {
+    width: 100%;
+    padding: 8px;
+    background-color: var(--color-text);
+    color: var(--color-white);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-receive:disabled {
+    background-color: #CCCCCC;
+    cursor: default;
+}
+
+/* ===== 스토리 (새 가맹점) ===== */
+.story-scroll {
+    display: flex;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    gap: 16px;
+    padding-bottom: 4px;
+}
+
+.story-scroll::-webkit-scrollbar { display: none; }
+
+.story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    cursor: pointer;
+}
+
+.story-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 3px solid var(--color-primary);
+}
+
+.story-name {
+    font-size: 11px;
+    color: var(--color-text-sub);
+    font-weight: 600;
+    text-align: center;
+    max-width: 64px;
+    word-break: keep-all;
+    line-height: 1.3;
+}
+
+/* ===== 하단 탭바 ===== */
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--max-width);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-white);
+    border-top: 1px solid #EEEEEE;
+    z-index: 100;
+}
+
+.tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+}
+
+.tab-icon {
+    font-size: 22px;
+    filter: grayscale(100%);
+    opacity: 0.45;
+    line-height: 1;
+}
+
+.tab-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.tab-item.active .tab-icon {
+    filter: none;
+    opacity: 1;
+}
+
+.tab-item.active .tab-label {
+    color: #B8A000;
+    font-weight: 700;
+}

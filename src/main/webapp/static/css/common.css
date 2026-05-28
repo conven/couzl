@@ -1,0 +1,30 @@
+:root {
+    --color-primary: #FFD60A;
+    --color-primary-dark: #E6C200;
+    --color-text: #1A1A1A;
+    --color-text-sub: #555555;
+    --color-text-muted: #999999;
+    --color-white: #FFFFFF;
+    --color-bg: #F5F5F5;
+    --max-width: 430px;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.wrap {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+}
