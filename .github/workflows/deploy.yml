@@ -46,9 +46,11 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            pkill -f "java" || true
+            pkill -f "couzl.war" || true
             sleep 3
-            nohup authbind --deep java -jar /home/ubuntu/couzl/couzl.war \
+            cd /home/ubuntu/couzl
+            setsid authbind --deep java -jar couzl.war \
               --spring.profiles.active=prod \
-              > /home/ubuntu/couzl/app.log 2>&1 &
-            echo "Deployed PID: $!"
+              > app.log 2>&1 < /dev/null &
+            sleep 2
+            echo "Deployed"
