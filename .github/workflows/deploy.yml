@@ -1,56 +1,50 @@
-name: Deploy to EC2
+  전체 deploy.yml 만들어드릴게요. 그대로 덮어쓰면 돼요.
+  yamlname: Deploy to EC2
 
-on:
-  push:
-    branches: [ main ]
+  on:
+    push:
+      branches: [ main ]
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+        - name: Set up JDK 17
+          uses: actions/setup-java@v4
+          with:
+            java-version: '17'
+            distribution: 'temurin'
 
-      - name: Grant gradlew permission
-        run: chmod +x ./gradlew
+        - name: Grant gradlew permission
+          run: chmod +x ./gradlew
 
-      # -x test: 테스트 생략하고 빌드 속도 향상
-      - name: Build WAR
-        run: ./gradlew bootWar -x test
+        - name: Build WAR
+          run: ./gradlew bootWar -x test
 
-      # SCP 전송 시 파일명 고정
-      - name: Rename WAR
-        run: mv build/libs/*.war build/libs/couzl.war
+        - name: Rename WAR
+          run: mv build/libs/*.war build/libs/couzl.war
 
-      - name: Upload WAR to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/couzl.war"
-          target: "/home/ubuntu/couzl"
-          strip_components: 2
+        - name: Upload WAR to EC2
+          uses: appleboy/scp-action@v0.1.7
+          with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.EC2_SSH_KEY }}
+            source: "build/libs/couzl.war"
+            target: "/home/ubuntu/couzl"
+            strip_components: 2
 
-      - name: Restart application on EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            pkill -f "couzl.war" || true
-            sleep 3
-            cd /home/ubuntu/couzl
-            setsid authbind --deep java -jar couzl.war \
-              --spring.profiles.active=prod \
-              > app.log 2>&1 < /dev/null &
-            sleep 2
-            echo "Deploy triggered"
+        - name: Restart application on EC2
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.EC2_SSH_KEY }}
+            script: |
+              sudo systemctl restart couzl
+              sleep 3
+              sudo systemctl status couzl --no-pager
