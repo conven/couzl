@@ -27,7 +27,7 @@
     </div>
     <div class="splash-footer">
         <p class="footer-tagline">즐거움을 나누는 로컬 쿠폰 플랫폼</p>
-        <p class="footer-version">v0.0.1</p>
+        <p class="footer-version">v0.0.2</p>
     </div>
 </div>
 <script src="/static/js/common.js"></script>
