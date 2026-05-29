@@ -32,9 +32,9 @@
 
     <!-- 하단 링크 -->
     <div class="login-links">
-        <span>아이디 찾기</span>
+        <span onclick="goTo('/find-id')" style="cursor:pointer;">아이디 찾기</span>
         <span class="divider">·</span>
-        <span>비밀번호 찾기</span>
+        <span onclick="goTo('/find-pw')" style="cursor:pointer;">비밀번호 찾기</span>
         <span class="divider">·</span>
         <span onclick="goTo('/register')" style="cursor:pointer;">회원가입</span>
     </div>

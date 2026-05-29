@@ -12,9 +12,6 @@
 <body>
 <div class="wrap">
 
-    <!-- 상단 헤더 -->
-    <%@ include file="/WEB-INF/views/common/_header.jsp" %>
-
     <!-- 페이지 헤더 (뒤로가기 + 타이틀) -->
     <div class="page-header" style="display:flex;align-items:center;width:100%;padding:16px 0 8px;gap:8px;">
         <button onclick="goTo('/login')" style="background:none;border:none;font-size:20px;cursor:pointer;padding:0;color:var(--color-text);">‹</button>
