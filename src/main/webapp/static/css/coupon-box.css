@@ -1,0 +1,319 @@
+/* ===== wrap ===== */
+.wrap {
+    background-color: var(--color-bg);
+    padding-bottom: 80px;
+}
+
+/* ===== 헤더 (main-header 공유) ===== */
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background-color: var(--color-white);
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.header-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.location-arrow {
+    font-size: 11px;
+    color: var(--color-text-sub);
+}
+
+.header-logo {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--color-text);
+    letter-spacing: 1px;
+}
+
+.btn-bell {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+}
+
+/* ===== 페이지 타이틀 ===== */
+.coupon-page-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 14px;
+    background-color: var(--color-white);
+}
+
+.coupon-page-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.coupon-count-badge {
+    min-width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+}
+
+/* ===== 탭 메뉴 ===== */
+.cb-tab-menu {
+    display: flex;
+    background-color: var(--color-white);
+    border-bottom: 1px solid #EEEEEE;
+    position: sticky;
+    top: 53px;
+    z-index: 90;
+}
+
+.cb-tab-item {
+    flex: 1;
+    padding: 13px 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.cb-tab-item.active {
+    color: var(--color-text);
+    border-bottom: 2px solid #FFD60A;
+}
+
+/* ===== 탭 컨텐츠 ===== */
+.cb-tab-content {
+    display: none;
+    padding: 16px;
+}
+
+.cb-tab-content.active {
+    display: block;
+}
+
+/* ===== 쿠폰 목록 ===== */
+.cb-coupon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ===== 쿠폰 카드 (티켓 노치 디자인) ===== */
+.cb-coupon-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.09);
+    background-color: var(--color-white);
+}
+
+.cb-coupon-upper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 18px 16px;
+}
+
+.cb-coupon-info {
+    flex: 1;
+    padding-right: 10px;
+}
+
+.cb-coupon-store {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.cb-coupon-benefit {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1.25;
+    margin-bottom: 8px;
+}
+
+.cb-coupon-expire {
+    font-size: 12px;
+    color: var(--color-text-sub);
+}
+
+.cb-emoji-circle {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background-color: #FFF8D6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+/* 노치 구분선 */
+.cb-coupon-divider {
+    height: 1px;
+    margin: 0 14px;
+    border-top: 1.5px dashed #D0D0D0;
+    position: relative;
+}
+
+.cb-coupon-divider::before,
+.cb-coupon-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-bg);
+    border-radius: 50%;
+}
+
+.cb-coupon-divider::before { left: -22px; }
+.cb-coupon-divider::after  { right: -22px; }
+
+.cb-coupon-lower {
+    padding: 14px 18px 18px;
+}
+
+.btn-coupon-use {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-coupon-use:active {
+    opacity: 0.8;
+}
+
+/* ===== 사용완료 / 기간만료 카드 ===== */
+.cb-coupon-card.used,
+.cb-coupon-card.expired {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.cb-coupon-card.used .btn-coupon-use,
+.cb-coupon-card.expired .btn-coupon-use {
+    background-color: #CCCCCC;
+    color: var(--color-white);
+    cursor: default;
+}
+
+/* 상태 뱃지 */
+.cb-status-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-white);
+    background-color: #999999;
+    border-radius: 4px;
+    padding: 3px 7px;
+    margin-bottom: 6px;
+}
+
+/* ===== 빈 상태 UI ===== */
+.cb-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 20px;
+}
+
+.cb-empty-icon {
+    font-size: 48px;
+    margin-bottom: 14px;
+    line-height: 1;
+}
+
+.cb-empty-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+/* ===== 하단 탭바 ===== */
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--max-width);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-white);
+    border-top: 1px solid #EEEEEE;
+    z-index: 100;
+}
+
+.tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+}
+
+.tab-icon {
+    font-size: 22px;
+    filter: grayscale(100%);
+    opacity: 0.45;
+    line-height: 1;
+}
+
+.tab-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.tab-item.active .tab-icon {
+    filter: none;
+    opacity: 1;
+}
+
+.tab-item.active .tab-label {
+    color: #B8A000;
+    font-weight: 700;
+}
