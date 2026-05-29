@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,12 +24,22 @@
         <p class="logo-sub">로그인하고 혜택을 받아보세요</p>
     </div>
 
+    <!-- 비인가 접근 메시지 -->
+    <c:if test="${param.msg == 'unauthorized'}">
+        <p class="login-error-msg login-unauthorized-msg">정상적인 접근이 아닙니다. 로그인 후 이용해주세요</p>
+    </c:if>
+
+    <!-- 에러 메시지 -->
+    <% if (request.getAttribute("errorMsg") != null) { %>
+    <p class="login-error-msg"><%= request.getAttribute("errorMsg") %></p>
+    <% } %>
+
     <!-- 입력 폼 -->
-    <div class="login-form">
-        <input type="text" id="username" class="input-field" placeholder="아이디" value="couzl">
-        <input type="password" id="password" class="input-field" placeholder="비밀번호" value="couzl">
-        <button type="button" class="btn-login" onclick="doLogin()">로그인</button>
-    </div>
+    <form class="login-form" action="/login" method="POST">
+        <input type="text"     name="loginId"  class="input-field ${not empty errorMsg ? 'error' : ''}" placeholder="아이디">
+        <input type="password" name="password" class="input-field ${not empty errorMsg ? 'error' : ''}" placeholder="비밀번호">
+        <button type="submit" class="btn-login">로그인</button>
+    </form>
 
     <!-- 하단 링크 -->
     <div class="login-links">
@@ -54,6 +65,5 @@
 
 </div>
 <script src="/static/js/common.js"></script>
-<script src="/static/js/login.js"></script>
 </body>
 </html>

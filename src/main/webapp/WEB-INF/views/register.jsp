@@ -97,14 +97,14 @@
                 <input type="checkbox" id="term1" class="custom-checkbox term-item" onchange="syncAllTerms()">
                 <label for="term1" class="terms-label">이용약관 동의 <span class="terms-badge">(필수)</span></label>
             </div>
-            <span class="terms-link" onclick="showAlert('준비 중입니다')">보기</span>
+            <span class="terms-link" onclick="goTo('/terms')">보기</span>
         </div>
         <div class="terms-row">
             <div class="terms-row-left">
                 <input type="checkbox" id="term2" class="custom-checkbox term-item" onchange="syncAllTerms()">
                 <label for="term2" class="terms-label">개인정보 처리방침 동의 <span class="terms-badge">(필수)</span></label>
             </div>
-            <span class="terms-link" onclick="showAlert('준비 중입니다')">보기</span>
+            <span class="terms-link" onclick="goTo('/privacy')">보기</span>
         </div>
         <div class="terms-row">
             <div class="terms-row-left">

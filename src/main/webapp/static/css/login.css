@@ -76,6 +76,23 @@
     background-color: var(--color-primary-dark);
 }
 
+/* 에러 메시지 */
+.login-error-msg {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #FF3B30;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.login-unauthorized-msg {
+    color: #FF4444;
+}
+
 /* 하단 링크 */
 .login-links {
     display: flex;

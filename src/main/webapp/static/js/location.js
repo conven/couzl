@@ -3,10 +3,18 @@ function selectDistrict(el) {
         c.classList.remove('selected');
     });
     el.classList.add('selected');
-    document.querySelector('.loc-current-name').textContent = el.dataset.name;
+    var currentName = document.querySelector('.loc-current-name');
+    if (currentName) {
+        currentName.textContent = el.dataset.name;
+    }
 }
 
 function saveLocation() {
-    alert('지역이 변경되었습니다!');
-    goTo('/mypage');
+    var selected = document.querySelector('.loc-card.selected');
+    if (!selected) {
+        alert('지역을 선택해주세요.');
+        return;
+    }
+    document.getElementById('selectedRegionId').value = selected.dataset.regionId;
+    document.getElementById('locationForm').submit();
 }

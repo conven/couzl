@@ -54,7 +54,7 @@
             <span class="mp-menu-label">내 쿠폰함</span>
             <span class="mp-menu-arrow">›</span>
         </button>
-        <button class="mp-menu-item" onclick="goTo('/coupon-history')">
+        <button class="mp-menu-item" onclick="goTo('/coupon-box')">
             <span class="mp-menu-icon">📋</span>
             <span class="mp-menu-label">쿠폰 사용 내역</span>
             <span class="mp-menu-arrow">›</span>

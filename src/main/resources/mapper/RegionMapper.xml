@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.RegionMapper">
+
+    <select id="findAllActive" resultType="com.couzl.couzl.dto.RegionDto">
+        SELECT region_id, region_name
+          FROM tb_region
+         WHERE is_active = 1 AND is_deleted = 0
+         ORDER BY region_id
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.couzl.couzl.dto.RegionDto">
+        SELECT region_id, region_name
+          FROM tb_region
+         WHERE region_id = #{regionId} AND is_deleted = 0
+    </select>
+
+</mapper>
