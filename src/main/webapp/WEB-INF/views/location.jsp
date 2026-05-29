@@ -99,13 +99,6 @@
     </form>
 
     <jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>
-    <script>
-        (function () {
-            var items = document.querySelectorAll('.tab-item');
-            items.forEach(function (t) { t.classList.remove('active'); });
-            if (items[2]) items[2].classList.add('active');
-        })();
-    </script>
 </div>
 </c:otherwise>
 

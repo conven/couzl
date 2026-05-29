@@ -49,13 +49,6 @@
 
     <!-- 5. 하단 탭바 -->
     <jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>
-    <script>
-        (function () {
-            var items = document.querySelectorAll('.tab-item');
-            items.forEach(function (t) { t.classList.remove('active'); });
-            if (items[1]) items[1].classList.add('active');
-        })();
-    </script>
 
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
