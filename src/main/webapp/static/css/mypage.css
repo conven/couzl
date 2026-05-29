@@ -1,0 +1,197 @@
+/* ===== wrap ===== */
+.wrap {
+    background-color: var(--color-bg);
+    padding-bottom: 80px;
+}
+
+/* ===== 프로필 영역 ===== */
+.mp-profile-section {
+    background-color: var(--color-white);
+    padding: 24px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mp-profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.mp-profile-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+}
+
+.mp-profile-email {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 14px;
+}
+
+.mp-btn-edit-profile {
+    padding: 7px 18px;
+    border: 1.5px solid #DDDDDD;
+    border-radius: 20px;
+    background: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-sub);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.mp-btn-edit-profile:active {
+    border-color: var(--color-text);
+    color: var(--color-text);
+}
+
+/* ===== 쿠폰 현황 카드 ===== */
+.mp-coupon-card {
+    margin: 16px 16px 0;
+    background-color: var(--color-primary);
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.mp-coupon-card:active {
+    opacity: 0.85;
+}
+
+.mp-coupon-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 14px;
+    opacity: 0.7;
+}
+
+.mp-coupon-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.mp-coupon-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.mp-coupon-stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1;
+}
+
+.mp-coupon-stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text);
+    opacity: 0.65;
+}
+
+.mp-coupon-stat-divider {
+    width: 1px;
+    height: 36px;
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* ===== 메뉴 섹션 ===== */
+.mp-menu-section {
+    margin-top: 16px;
+    background-color: var(--color-white);
+}
+
+.mp-section-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    padding: 14px 16px 6px;
+}
+
+.mp-menu-item {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.15s;
+}
+
+.mp-menu-item:active {
+    background-color: #f8f8f8;
+}
+
+.mp-menu-item + .mp-menu-item {
+    border-top: 1px solid #f0f0f0;
+}
+
+.mp-menu-icon {
+    font-size: 18px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.mp-menu-label {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.mp-menu-badge {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    margin-right: 8px;
+}
+
+.mp-menu-arrow {
+    font-size: 13px;
+    color: #CCCCCC;
+    flex-shrink: 0;
+}
+
+.mp-section-divider {
+    height: 8px;
+    background-color: var(--color-bg);
+}
+
+/* ===== 앱 버전 ===== */
+.mp-app-version {
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    padding: 24px 0 16px;
+}

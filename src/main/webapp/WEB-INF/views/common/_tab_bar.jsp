@@ -8,7 +8,7 @@
         <span class="tab-icon">🎟</span>
         <span class="tab-label">쿠폰함</span>
     </button>
-    <button class="tab-item" onclick="showAlert('준비 중입니다')">
+    <button class="tab-item" onclick="goTo('/mypage')">
         <span class="tab-icon">👤</span>
         <span class="tab-label">마이페이지</span>
     </button>
