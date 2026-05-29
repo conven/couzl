@@ -19,6 +19,8 @@ public class UserDto {
     private String status;
     private Long regionId;
     private String regionName;
+    private byte[] profileImage;
+    private String profileImageType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

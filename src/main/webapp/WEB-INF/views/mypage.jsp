@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -17,9 +19,18 @@
 
     <!-- 2. 프로필 영역 -->
     <div class="mp-profile-section">
-        <div class="mp-profile-avatar">👤</div>
-        <p class="mp-profile-name">쿠즐유저</p>
-        <p class="mp-profile-email">user@couzl.com</p>
+        <div class="mp-profile-avatar">
+            <c:choose>
+                <c:when test="${not empty profileImageBase64}">
+                    <img src="data:image/jpeg;base64,${profileImageBase64}" alt="프로필 이미지">
+                </c:when>
+                <c:otherwise>
+                    <span class="profile-initial">${fn:substring(user.nickname, 0, 1)}</span>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <p class="mp-profile-name">${fn:escapeXml(user.nickname)}</p>
+        <p class="mp-profile-email">${fn:escapeXml(user.email)}</p>
         <button class="mp-btn-edit-profile" onclick="goTo('/profile-edit')">프로필 수정</button>
     </div>
 

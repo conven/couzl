@@ -1,4 +1,4 @@
-/* ===== wrap ===== */
+/* ===== 지역 변경 모드 wrap ===== */
 .wrap {
     background-color: var(--color-bg);
     padding-bottom: 80px;
@@ -37,20 +37,6 @@
 
 .loc-header-right {
     width: 40px;
-}
-
-/* ===== 헤더 왼쪽 플레이스홀더 ===== */
-.loc-header-left {
-    width: 40px;
-}
-
-/* ===== 안내 문구 ===== */
-.loc-guide {
-    padding: 24px 16px 8px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--color-text-sub);
 }
 
 /* ===== 섹션 ===== */
@@ -99,32 +85,45 @@
     color: var(--color-text);
 }
 
-/* ===== 지역 그리드 ===== */
+/* ===== 지역 변경 모드 그리드 ===== */
 .loc-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
-.loc-card {
+.loc-grid .loc-card {
     height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1.5px solid #EEEEEE;
     border-radius: var(--border-radius);
     background-color: var(--color-bg);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--color-text-sub);
     cursor: pointer;
     transition: border-color 0.15s, background-color 0.15s, color 0.15s;
 }
 
-.loc-card:active {
+.loc-grid .loc-card .loc-card-emoji {
+    display: none;
+}
+
+.loc-grid .loc-card .loc-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-sub);
+}
+
+.loc-grid .loc-card:active {
     opacity: 0.8;
 }
 
-.loc-card.selected {
+.loc-grid .loc-card.selected {
     border-color: var(--color-primary);
     background-color: var(--color-primary);
+}
+
+.loc-grid .loc-card.selected .loc-card-name {
     color: var(--color-text);
     font-weight: 700;
 }
@@ -144,9 +143,134 @@
     font-weight: 800;
     color: var(--color-text);
     cursor: pointer;
+    font-family: inherit;
     transition: opacity 0.2s;
 }
 
 .loc-btn-save:active {
     opacity: 0.85;
+}
+
+/* ===== 최초 설정 모드 ===== */
+.loc-setup-wrap {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: #FFD60A;
+    padding: 52px 24px 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loc-setup-logo {
+    margin-bottom: 28px;
+}
+
+.loc-setup-headline {
+    font-size: 24px;
+    font-weight: 900;
+    color: #1A1A1A;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.loc-setup-sub {
+    font-size: 14px;
+    color: rgba(26, 26, 26, 0.65);
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+/* ===== 최초 설정 모드 리스트 ===== */
+.loc-setup-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.loc-setup-list .loc-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+    transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.loc-setup-list .loc-card:active {
+    opacity: 0.85;
+}
+
+.loc-card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.loc-setup-list .loc-card .loc-card-emoji {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.loc-setup-list .loc-card .loc-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+.loc-card-check {
+    font-size: 16px;
+    font-weight: 900;
+    color: #1A1A1A;
+    visibility: hidden;
+    flex-shrink: 0;
+}
+
+.loc-setup-list .loc-card.selected {
+    background-color: #FFD60A;
+    box-shadow: none;
+}
+
+.loc-setup-list .loc-card.selected .loc-card-check {
+    visibility: visible;
+}
+
+/* ===== 최초 설정 모드 하단 ===== */
+.loc-setup-bottom {
+    width: 100%;
+    padding-top: 20px;
+    position: sticky;
+    bottom: 0;
+    background-color: #FFD60A;
+}
+
+.loc-setup-hint {
+    font-size: 12px;
+    color: rgba(26, 26, 26, 0.5);
+    text-align: center;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.loc-setup-bottom .loc-btn-save {
+    height: 56px;
+    border-radius: 24px;
+    background-color: #FFFFFF;
+    color: #1A1A1A;
+    font-size: 16px;
+}
+
+.loc-setup-bottom .loc-btn-save:disabled {
+    background-color: rgba(0, 0, 0, 0.18);
+    color: rgba(0, 0, 0, 0.35);
+    cursor: not-allowed;
 }

@@ -1,4 +1,5 @@
 function handleLogout() {
-    alert('로그아웃 되었습니다');
-    goTo('/login');
+    if (confirm('로그아웃 하시겠습니까?')) {
+        goTo('/logout');
+    }
 }

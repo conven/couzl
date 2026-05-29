@@ -34,6 +34,21 @@
     font-size: 34px;
     margin-bottom: 12px;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.mp-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-initial {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1;
 }
 
 .mp-profile-name {

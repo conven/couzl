@@ -30,4 +30,23 @@
          WHERE user_id = #{userId}
     </update>
 
+    <update id="updateProfile">
+        UPDATE tb_user
+           SET nickname = #{nickname}
+               <if test="profileImage != null">
+               , profile_image = #{profileImage, jdbcType=BLOB}
+               , profile_image_type = #{profileImageType}
+               </if>
+               , updated_at = NOW()
+         WHERE user_id = #{userId}
+    </update>
+
+    <select id="selectProfileImage" resultType="com.couzl.couzl.dto.UserDto">
+        SELECT profile_image,
+               profile_image_type
+          FROM tb_user
+         WHERE user_id = #{userId}
+           AND is_deleted = 0
+    </select>
+
 </mapper>

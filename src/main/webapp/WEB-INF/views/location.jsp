@@ -11,41 +11,70 @@
     <link rel="stylesheet" href="/static/css/location.css">
 </head>
 <body>
+
+<c:choose>
+
+<%-- ───── 최초 설정 모드 (탭바 없음) ───── --%>
+<c:when test="${empty currentRegion}">
+<div class="loc-setup-wrap">
+
+    <div class="loc-setup-logo">
+        <jsp:include page="/WEB-INF/views/common/_logo.jsp">
+            <jsp:param name="bgColor"    value="white"/>
+            <jsp:param name="inkColor"   value="#FFD60A"/>
+            <jsp:param name="notchColor" value="#FFD60A"/>
+        </jsp:include>
+    </div>
+
+    <p class="loc-setup-headline">내 지역을 설정해주세요</p>
+    <p class="loc-setup-sub">선택한 지역의 가맹점과 쿠폰을 만나보세요!</p>
+
+    <div class="loc-setup-list">
+        <c:forEach var="region" items="${regions}">
+            <button class="loc-card"
+                    data-region-id="${region.regionId}"
+                    data-name="${region.regionName}"
+                    onclick="selectDistrict(this)">
+                <span class="loc-card-left">
+                    <span class="loc-card-emoji"></span>
+                    <span class="loc-card-name">${region.regionName}</span>
+                </span>
+                <span class="loc-card-check">✓</span>
+            </button>
+        </c:forEach>
+    </div>
+
+    <div class="loc-setup-bottom">
+        <p class="loc-setup-hint">지역은 마이페이지 &gt; 내 지역 관리에서 변경할 수 있어요</p>
+        <button id="locBtnSave" class="loc-btn-save" disabled onclick="saveLocation()">
+            이 지역으로 시작하기!
+        </button>
+    </div>
+
+    <form id="locationForm" method="post" action="/location">
+        <input type="hidden" name="regionId" id="selectedRegionId" value="">
+    </form>
+</div>
+</c:when>
+
+<%-- ───── 지역 변경 모드 (탭바 있음) ───── --%>
+<c:otherwise>
 <div class="wrap">
 
-    <!-- 1. 상단 헤더 -->
     <div class="loc-header">
-        <c:choose>
-            <c:when test="${not empty currentRegion}">
-                <button class="loc-btn-back" onclick="goTo('/mypage')">&#8592;</button>
-            </c:when>
-            <c:otherwise>
-                <div class="loc-header-left"></div>
-            </c:otherwise>
-        </c:choose>
+        <button class="loc-btn-back" onclick="goTo('/mypage')">&#8592;</button>
         <span class="loc-header-title">내 지역 관리</span>
         <div class="loc-header-right"></div>
     </div>
 
-    <!-- 안내 문구 (최초 설정 시) -->
-    <c:if test="${empty currentRegion}">
-        <div class="loc-guide">
-            <p>서비스 이용을 위해 지역을 선택해주세요</p>
+    <div class="loc-section">
+        <p class="loc-section-title">현재 내 지역</p>
+        <div class="loc-current-card">
+            <span class="loc-current-icon">✓</span>
+            <span class="loc-current-name">${currentRegion.regionName}</span>
         </div>
-    </c:if>
+    </div>
 
-    <!-- 2. 현재 설정 지역 (지역 있을 때만 표시) -->
-    <c:if test="${not empty currentRegion}">
-        <div class="loc-section">
-            <p class="loc-section-title">현재 내 지역</p>
-            <div class="loc-current-card">
-                <span class="loc-current-icon">✓</span>
-                <span class="loc-current-name">${currentRegion}</span>
-            </div>
-        </div>
-    </c:if>
-
-    <!-- 3. 지역 변경 -->
     <div class="loc-section">
         <p class="loc-section-title">지역 변경</p>
         <div class="loc-grid">
@@ -53,27 +82,22 @@
                 <button class="loc-card${region.regionId == currentRegionId ? ' selected' : ''}"
                         data-region-id="${region.regionId}"
                         data-name="${region.regionName}"
-                        onclick="selectDistrict(this)">${region.regionName}</button>
+                        onclick="selectDistrict(this)">
+                    <span class="loc-card-emoji"></span>
+                    <span class="loc-card-name">${region.regionName}</span>
+                </button>
             </c:forEach>
         </div>
     </div>
 
-    <!-- 4. 저장 버튼 -->
     <div class="loc-btn-wrap">
-        <button class="loc-btn-save" onclick="saveLocation()">
-            <c:choose>
-                <c:when test="${not empty currentRegion}">변경하기</c:when>
-                <c:otherwise>지역 설정하기</c:otherwise>
-            </c:choose>
-        </button>
+        <button id="locBtnSave" class="loc-btn-save" onclick="saveLocation()">변경하기</button>
     </div>
 
-    <!-- 히든 폼 -->
     <form id="locationForm" method="post" action="/location">
         <input type="hidden" name="regionId" id="selectedRegionId" value="">
     </form>
 
-    <!-- 하단 탭바 -->
     <jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>
     <script>
         (function () {
@@ -82,8 +106,11 @@
             if (items[2]) items[2].classList.add('active');
         })();
     </script>
-
 </div>
+</c:otherwise>
+
+</c:choose>
+
 <script src="/static/js/common.js"></script>
 <script src="/static/js/location.js"></script>
 </body>

@@ -3,18 +3,12 @@
 <header class="main-header">
     <c:choose>
         <c:when test="${not empty sessionScope.USER_REGION}">
-            <div class="header-location" onclick="LocationModal.open()">
-                <span>📍</span>
-                <span class="location-text">${sessionScope.USER_REGION}</span>
-                <span class="location-arrow">▾</span>
+            <div class="header-location" onclick="goTo('/location')">
+                <span>📍 ${sessionScope.USER_REGION.regionName} ▾</span>
             </div>
         </c:when>
         <c:otherwise>
-            <div class="header-location" onclick="goTo('/location')">
-                <span>📍</span>
-                <span class="location-text">지역선택</span>
-                <span class="location-arrow">▾</span>
-            </div>
+            <div class="header-location" style="visibility:hidden;"></div>
         </c:otherwise>
     </c:choose>
     <span class="header-logo">Couzl</span>

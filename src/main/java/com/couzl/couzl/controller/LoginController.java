@@ -1,6 +1,8 @@
 package com.couzl.couzl.controller;
 
+import com.couzl.couzl.dto.RegionDto;
 import com.couzl.couzl.dto.UserDto;
+import com.couzl.couzl.mapper.RegionMapper;
 import com.couzl.couzl.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
     private final UserService userService;
+    private final RegionMapper regionMapper;
 
     @GetMapping("/login")
     public String loginForm() {
@@ -34,6 +37,12 @@ public class LoginController {
             return "login";
         }
 
-        return "redirect:/main";
+        if (user.getRegionId() != null) {
+            RegionDto regionDto = regionMapper.findById(user.getRegionId());
+            session.setAttribute("USER_REGION", regionDto);
+            return "redirect:/main";
+        }
+
+        return "redirect:/welcome";
     }
 }

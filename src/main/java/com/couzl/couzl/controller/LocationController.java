@@ -25,7 +25,7 @@ public class LocationController {
     public String location(HttpSession session, Model model) {
         List<RegionDto> regions = regionMapper.findAllActive();
         UserDto loginUser = (UserDto) session.getAttribute("LOGIN_USER");
-        String currentRegion = (String) session.getAttribute("USER_REGION");
+        RegionDto currentRegion = (RegionDto) session.getAttribute("USER_REGION");
 
         model.addAttribute("regions", regions);
         model.addAttribute("currentRegion", currentRegion);
@@ -44,7 +44,7 @@ public class LocationController {
         loginUser.setRegionId(regionId);
         loginUser.setRegionName(region.getRegionName());
         session.setAttribute("LOGIN_USER", loginUser);
-        session.setAttribute("USER_REGION", region.getRegionName());
+        session.setAttribute("USER_REGION", region);
 
         return isFirstSetup ? "redirect:/main" : "redirect:/mypage";
     }
