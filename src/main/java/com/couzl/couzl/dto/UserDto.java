@@ -21,6 +21,9 @@ public class UserDto {
     private String regionName;
     private byte[] profileImage;
     private String profileImageType;
+    private String emailVerifyCode;
+    private LocalDateTime emailVerifyExpiry;
+    private String emailVerified;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

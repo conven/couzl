@@ -127,3 +127,27 @@ body {
     color: #B8A000;
     font-weight: 700;
 }
+
+/* ===== 전역 로딩 스피너 ===== */
+.app-spinner-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.app-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #FFD60A;
+    border-radius: 50%;
+    animation: app-spin 0.8s linear infinite;
+}
+
+@keyframes app-spin {
+    to { transform: rotate(360deg); }
+}

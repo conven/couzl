@@ -34,7 +34,7 @@
         <div class="form-group">
             <label for="userId">아이디</label>
             <div class="input-wrap">
-                <input type="text" id="userId" class="input-field" placeholder="영문/숫자 6~20자">
+                <input type="text" id="userId" class="input-field" placeholder="영문/숫자 6~20자" oninput="onUserIdChange()">
                 <button type="button" class="btn-inline" onclick="checkDuplicate()">중복확인</button>
             </div>
         </div>
@@ -79,6 +79,7 @@
                 <input type="text" id="verifyCode" class="input-field" placeholder="인증번호 입력">
                 <button type="button" class="btn-inline" onclick="confirmVerifyCode()">확인</button>
             </div>
+            <div id="verifyTimer" style="display:none;margin-top:6px;font-size:13px;color:#B8A000;font-weight:600;"></div>
         </div>
 
     </div>

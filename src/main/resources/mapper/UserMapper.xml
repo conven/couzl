@@ -15,6 +15,7 @@
                u.status,
                u.region_id,
                r.region_name,
+               u.email_verified,
                u.created_at,
                u.updated_at
           FROM tb_user u
@@ -22,6 +23,42 @@
          WHERE u.login_id  = #{loginId}
            AND u.is_deleted = 0
     </select>
+
+    <select id="findByEmail" parameterType="string" resultType="com.couzl.couzl.dto.UserDto">
+        SELECT user_id,
+               login_id,
+               email,
+               email_verify_code,
+               email_verify_expiry,
+               email_verified
+          FROM tb_user
+         WHERE email = #{email}
+           AND is_deleted = 0
+    </select>
+
+    <select id="countByLoginId" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_user
+         WHERE login_id = #{loginId}
+           AND is_deleted = 0
+    </select>
+
+    <select id="countByEmail" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_user
+         WHERE email = #{email}
+           AND is_deleted = 0
+    </select>
+
+    <insert id="insertUser" parameterType="com.couzl.couzl.dto.UserDto"
+            useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO tb_user (login_id, password, nickname, email,
+                             social_type, status, email_verified,
+                             created_by, updated_by)
+        VALUES (#{loginId}, #{password}, #{nickname}, #{email},
+                'NONE', 'ACTIVE', 'N',
+                'system', 'system')
+    </insert>
 
     <update id="updateRegion">
         UPDATE tb_user
@@ -48,5 +85,25 @@
          WHERE user_id = #{userId}
            AND is_deleted = 0
     </select>
+
+    <update id="updateEmailVerifyCode">
+        UPDATE tb_user
+           SET email_verify_code   = #{code},
+               email_verify_expiry = #{expiry},
+               email_verified      = 'N',
+               updated_at          = NOW()
+         WHERE email = #{email}
+           AND is_deleted = 0
+    </update>
+
+    <update id="markEmailVerified">
+        UPDATE tb_user
+           SET email_verified      = 'Y',
+               email_verify_code   = NULL,
+               email_verify_expiry = NULL,
+               updated_at          = NOW()
+         WHERE email = #{email}
+           AND is_deleted = 0
+    </update>
 
 </mapper>

@@ -29,6 +29,11 @@
         <p class="login-error-msg login-unauthorized-msg">정상적인 접근이 아닙니다. 로그인 후 이용해주세요</p>
     </c:if>
 
+    <!-- 회원가입 완료 메시지 -->
+    <c:if test="${param.msg == 'registered'}">
+        <p class="login-error-msg" style="color:#1ec773;background:#e8fbf2;">회원가입이 완료되었습니다. 로그인해주세요!</p>
+    </c:if>
+
     <!-- 에러 메시지 -->
     <% if (request.getAttribute("errorMsg") != null) { %>
     <p class="login-error-msg"><%= request.getAttribute("errorMsg") %></p>

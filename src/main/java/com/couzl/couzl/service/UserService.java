@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public UserDto login(String loginId, String rawPassword, HttpSession session) {
         UserDto user = userMapper.findByLoginId(loginId);
@@ -72,5 +74,61 @@ public class UserService {
             return Base64.getEncoder().encodeToString(profileData.getProfileImage());
         }
         return null;
+    }
+
+    public boolean isLoginIdAvailable(String loginId) {
+        return userMapper.countByLoginId(loginId) == 0;
+    }
+
+    public boolean isEmailAvailable(String email) {
+        return userMapper.countByEmail(email) == 0;
+    }
+
+    public void sendVerifyCode(String email) {
+        if (userMapper.countByEmail(email) == 0) {
+            throw new IllegalStateException("먼저 회원가입 정보를 입력해주세요");
+        }
+        emailService.sendVerifyCode(email);
+    }
+
+    public void verifyEmail(String email, String code) {
+        UserDto user = userMapper.findByEmail(email);
+        if (user == null || user.getEmailVerifyCode() == null) {
+            throw new IllegalStateException("인증코드를 먼저 발송해주세요");
+        }
+        if (!user.getEmailVerifyCode().equals(code)) {
+            throw new IllegalArgumentException("인증코드가 일치하지 않습니다");
+        }
+        if (user.getEmailVerifyExpiry() == null
+                || user.getEmailVerifyExpiry().isBefore(java.time.LocalDateTime.now())) {
+            throw new IllegalStateException("인증코드가 만료되었습니다. 다시 발송해주세요");
+        }
+        userMapper.markEmailVerified(email);
+    }
+
+    @Transactional
+    public void register(String loginId, String nickname, String email, String rawPassword) {
+        if (userMapper.countByLoginId(loginId) > 0) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다");
+        }
+        if (userMapper.countByEmail(email) > 0) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다");
+        }
+
+        UserDto user = new UserDto();
+        user.setLoginId(loginId);
+        user.setNickname(nickname);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(rawPassword));
+        userMapper.insertUser(user);
+
+        emailService.sendVerifyCode(email);
+    }
+
+    public void finalizeRegistration(String email) {
+        UserDto user = userMapper.findByEmail(email);
+        if (user == null || !"Y".equals(user.getEmailVerified())) {
+            throw new IllegalStateException("이메일 인증이 완료되지 않았습니다");
+        }
     }
 }
