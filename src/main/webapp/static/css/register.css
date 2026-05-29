@@ -1,0 +1,243 @@
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px 40px;
+    background-color: var(--color-white);
+}
+
+/* 로고 */
+.register-logo {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0 16px;
+}
+
+.register-logo svg {
+    width: 52px;
+    height: 52px;
+}
+
+/* 폼 섹션 */
+.register-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.input-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-field {
+    flex: 1;
+    padding: 14px 16px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--color-text);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: var(--color-primary);
+}
+
+.input-field.error {
+    border-color: #FF3B30;
+}
+
+.error-text {
+    font-size: 12px;
+    color: #FF3B30;
+    margin-top: 2px;
+    display: none;
+}
+
+.error-text.visible {
+    display: block;
+}
+
+/* 버튼들 */
+.btn-inline {
+    padding: 12px 14px;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--color-text);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-inline:hover {
+    background-color: var(--color-primary-dark);
+}
+
+/* 비밀번호 눈 아이콘 */
+.input-pw-wrap {
+    position: relative;
+    flex: 1;
+}
+
+.input-pw-wrap .input-field {
+    width: 100%;
+    padding-right: 44px;
+    box-sizing: border-box;
+}
+
+.btn-eye {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--color-text-muted);
+    padding: 0;
+    line-height: 1;
+}
+
+/* 인증번호 영역 */
+.verify-wrap {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.verify-wrap.visible {
+    display: flex;
+}
+
+/* 약관 동의 */
+.terms-section {
+    width: 100%;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.terms-divider {
+    height: 1px;
+    background-color: #eeeeee;
+    margin: 0;
+}
+
+.terms-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.terms-row-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.terms-label {
+    font-size: 14px;
+    color: var(--color-text);
+    cursor: pointer;
+    user-select: none;
+}
+
+.terms-label.bold {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.terms-badge {
+    font-size: 11px;
+    color: var(--color-text-muted);
+}
+
+.terms-link {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* 커스텀 체크박스 */
+.custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #dddddd;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.custom-checkbox:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #333;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+}
+
+/* 가입하기 버튼 */
+.btn-register {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--color-text);
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-register:hover {
+    background-color: var(--color-primary-dark);
+}

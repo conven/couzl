@@ -36,7 +36,7 @@
         <span class="divider">·</span>
         <span>비밀번호 찾기</span>
         <span class="divider">·</span>
-        <span>회원가입</span>
+        <span onclick="goTo('/register')" style="cursor:pointer;">회원가입</span>
     </div>
 
     <!-- 소셜 로그인 -->
