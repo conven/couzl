@@ -13,15 +13,7 @@
 <div class="wrap">
 
     <!-- 1. 헤더 -->
-    <header class="main-header">
-        <div class="header-location">
-            <span>📍</span>
-            <span class="location-text">강남구</span>
-            <span class="location-arrow">▾</span>
-        </div>
-        <span class="header-logo">Couzl</span>
-        <button class="btn-bell" onclick="showAlert('알림이 없습니다')">🔔</button>
-    </header>
+    <jsp:include page="/WEB-INF/views/common/_header.jsp"/>
 
     <!-- 2. 검색바 -->
     <div class="search-wrap">
@@ -98,7 +90,7 @@
             <span class="section-more">전체보기 &gt;</span>
         </div>
         <div class="shop-grid">
-            <div class="shop-card">
+            <div class="shop-card" onclick="goTo('/store')">
                 <div class="shop-image" style="background-color:#FFEAA7;">☕</div>
                 <div class="shop-info">
                     <span class="shop-tag">카페</span>
@@ -109,7 +101,7 @@
                     <span class="shop-coupon">🎟 쿠폰 2개</span>
                 </div>
             </div>
-            <div class="shop-card">
+            <div class="shop-card" onclick="goTo('/store')">
                 <div class="shop-image" style="background-color:#DFE6E9;">🍣</div>
                 <div class="shop-info">
                     <span class="shop-tag">음식점</span>
@@ -120,7 +112,7 @@
                     <span class="shop-coupon">🎟 쿠폰 1개</span>
                 </div>
             </div>
-            <div class="shop-card">
+            <div class="shop-card" onclick="goTo('/store')">
                 <div class="shop-image" style="background-color:#FFEEF0;">✂️</div>
                 <div class="shop-info">
                     <span class="shop-tag">미용</span>
@@ -131,7 +123,7 @@
                     <span class="shop-coupon">🎟 쿠폰 3개</span>
                 </div>
             </div>
-            <div class="shop-card">
+            <div class="shop-card" onclick="goTo('/store')">
                 <div class="shop-image" style="background-color:#E8F5E9;">🏋</div>
                 <div class="shop-info">
                     <span class="shop-tag">운동</span>
@@ -247,20 +239,7 @@
     </section>
 
     <!-- 8. 하단 탭바 -->
-    <nav class="tab-bar">
-        <button class="tab-item active">
-            <span class="tab-icon">🏠</span>
-            <span class="tab-label">홈</span>
-        </button>
-        <button class="tab-item" onclick="switchTab(this)">
-            <span class="tab-icon">🎟</span>
-            <span class="tab-label">쿠폰함</span>
-        </button>
-        <button class="tab-item" onclick="switchTab(this)">
-            <span class="tab-icon">👤</span>
-            <span class="tab-label">마이페이지</span>
-        </button>
-    </nav>
+    <jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>
 
 </div>
 <script src="/static/js/common.js"></script>
