@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.StoreMapper">
+
+    <select id="selectAllStoresWithLocation" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT store_id,
+               region_id,
+               store_name,
+               category,
+               address,
+               phone,
+               business_hours,
+               description,
+               emoji,
+               rating_avg,
+               status,
+               latitude,
+               longitude
+          FROM tb_store
+         WHERE latitude IS NOT NULL
+           AND longitude IS NOT NULL
+           AND is_deleted = 0
+           AND status = 'ACTIVE'
+    </select>
+
+    <select id="selectCouponsByStoreId" parameterType="long" resultType="com.couzl.couzl.dto.CouponDto">
+        SELECT coupon_id,
+               store_id,
+               coupon_name,
+               benefit,
+               condition_text,
+               expire_date
+          FROM tb_coupon
+         WHERE store_id = #{storeId}
+           AND status = 'ACTIVE'
+         LIMIT 3
+    </select>
+
+</mapper>
