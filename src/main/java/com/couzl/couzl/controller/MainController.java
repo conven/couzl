@@ -2,7 +2,9 @@ package com.couzl.couzl.controller;
 
 import com.couzl.couzl.dto.RegionDto;
 import com.couzl.couzl.dto.StoreDto;
+import com.couzl.couzl.dto.UserDto;
 import com.couzl.couzl.mapper.AdminStoreMapper;
+import com.couzl.couzl.mapper.RegionMapper;
 import com.couzl.couzl.service.MainService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
@@ -27,6 +29,7 @@ public class MainController {
 
     private final MainService mainService;
     private final AdminStoreMapper adminStoreMapper;
+    private final RegionMapper regionMapper;
     private final ServletContext servletContext;
 
     @Value("${kakao.map.key}")
@@ -36,10 +39,11 @@ public class MainController {
     public String main(@RequestParam(required = false) String category,
                        @RequestParam(required = false, defaultValue = "") String keyword,
                        @RequestParam(required = false, defaultValue = "1") int page,
+                       @RequestParam(required = false) Long regionId,
                        HttpSession session,
                        Model model) {
 
-        populateSections(category, keyword, page, session, model);
+        populateSections(category, keyword, page, regionId, session, model);
         model.addAttribute("banners", mainService.getActiveBanners());
         model.addAttribute("kakaoMapKey", kakaoMapKey);
         return "main";
@@ -49,18 +53,34 @@ public class MainController {
     public String mainContent(@RequestParam(required = false) String category,
                               @RequestParam(required = false, defaultValue = "") String keyword,
                               @RequestParam(required = false, defaultValue = "1") int page,
+                              @RequestParam(required = false) Long regionId,
                               HttpSession session,
                               Model model) {
 
-        populateSections(category, keyword, page, session, model);
+        populateSections(category, keyword, page, regionId, session, model);
         return "main/_sections";
     }
 
-    private void populateSections(String category, String keyword, int page,
+    private void populateSections(String category, String keyword, int page, Long requestedRegionId,
                                   HttpSession session, Model model) {
-        RegionDto region = (RegionDto) session.getAttribute("USER_REGION");
-        Long regionId = (region != null) ? region.getRegionId() : null;
-        String regionName = (region != null) ? region.getRegionName() : "전체";
+        UserDto loginUser = (UserDto) session.getAttribute("LOGIN_USER");
+
+        Long regionId;
+        String regionName;
+        if (loginUser != null) {
+            // 로그인 유저: 세션 USER_REGION 우선
+            RegionDto region = (RegionDto) session.getAttribute("USER_REGION");
+            regionId = (region != null) ? region.getRegionId() : null;
+            regionName = (region != null) ? region.getRegionName() : "전체";
+        } else if (requestedRegionId != null) {
+            // 비로그인: URL 파라미터 regionId
+            RegionDto region = regionMapper.findById(requestedRegionId);
+            regionId = (region != null) ? region.getRegionId() : null;
+            regionName = (region != null) ? region.getRegionName() : "전체";
+        } else {
+            regionId = null;
+            regionName = "전체";
+        }
 
         Map<String, Object> storeList = mainService.getStoreList(regionId, category, keyword, page);
         String normalizedCategory = (String) storeList.get("category");
@@ -74,6 +94,7 @@ public class MainController {
         model.addAttribute("category", normalizedCategory);
         model.addAttribute("keyword", storeList.get("keyword"));
         model.addAttribute("regionName", regionName);
+        model.addAttribute("regionId", regionId);
     }
 
     @GetMapping("/store/image/{storeId}")

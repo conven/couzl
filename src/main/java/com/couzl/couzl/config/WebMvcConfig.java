@@ -14,6 +14,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(
+                        "/",
+                        "/splash",
                         "/login",
                         "/register",
                         "/register/**",
@@ -21,12 +23,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/find-pw",
                         "/terms",
                         "/privacy",
+                        "/main",
+                        "/main/**",
+                        "/store",
+                        "/store/**",
+                        "/map",
+                        "/map/**",
                         "/static/**",
                         "/css/**",
                         "/js/**",
                         "/profile-image/**",
                         "/review-image/**",
                         "/banner/image/**",
+                        "/store/image/**",
                         "/admin/**"
                 );
 

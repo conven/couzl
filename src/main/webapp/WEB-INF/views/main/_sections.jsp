@@ -164,6 +164,9 @@
 
             <c:if test="${totalPages > 1}">
                 <c:set var="pageBaseQs" value=""/>
+                <c:if test="${empty sessionScope.LOGIN_USER and not empty regionId}">
+                    <c:set var="pageBaseQs" value="${pageBaseQs}&regionId=${regionId}"/>
+                </c:if>
                 <c:if test="${not empty category}">
                     <c:set var="pageBaseQs" value="${pageBaseQs}&category=${fn:escapeXml(category)}"/>
                 </c:if>

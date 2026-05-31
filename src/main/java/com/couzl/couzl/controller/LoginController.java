@@ -20,13 +20,20 @@ public class LoginController {
     private final RegionMapper regionMapper;
 
     @GetMapping("/login")
-    public String loginForm() {
+    public String loginForm(@RequestParam(required = false) String redirect,
+                            HttpSession session,
+                            Model model) {
+        if (session.getAttribute("LOGIN_USER") != null) {
+            return "redirect:/main";
+        }
+        model.addAttribute("redirect", redirect);
         return "login";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam String loginId,
                         @RequestParam String password,
+                        @RequestParam(required = false) String redirect,
                         HttpSession session,
                         Model model) {
 
@@ -34,15 +41,32 @@ public class LoginController {
 
         if (user == null) {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호를 확인해주세요");
+            model.addAttribute("redirect", redirect);
             return "login";
         }
 
         if (user.getRegionId() != null) {
             RegionDto regionDto = regionMapper.findById(user.getRegionId());
             session.setAttribute("USER_REGION", regionDto);
+
+            String target = resolveRedirect(redirect);
+            if (target != null) {
+                return "redirect:" + target;
+            }
             return "redirect:/main";
         }
 
         return "redirect:/welcome";
+    }
+
+    private String resolveRedirect(String redirect) {
+        if (redirect == null) return null;
+        String trimmed = redirect.trim();
+        if (trimmed.isEmpty()) return null;
+        if (!trimmed.startsWith("/")) return null;
+        if (trimmed.startsWith("//")) return null;
+        String lower = trimmed.toLowerCase();
+        if (lower.startsWith("/http:") || lower.startsWith("/https:")) return null;
+        return trimmed;
     }
 }

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () {
-        goTo('/login');
+        goTo('/main');
     }, 2000);
 });

@@ -64,5 +64,6 @@
 </div>
 <script src="/static/js/common.js"></script>
 <script src="/static/js/find-account.js"></script>
+<%@ include file="/WEB-INF/views/common/_footer.jsp" %>
 </body>
 </html>

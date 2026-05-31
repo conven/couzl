@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.MapMapper">
+
+    <resultMap id="StoreWithCouponsMap" type="com.couzl.couzl.dto.StoreDto">
+        <id     property="storeId"       column="store_id"/>
+        <result property="storeName"     column="store_name"/>
+        <result property="category"      column="category"/>
+        <result property="address"       column="address"/>
+        <result property="emoji"         column="emoji"/>
+        <result property="ratingAvg"     column="rating_avg"/>
+        <result property="latitude"      column="latitude"/>
+        <result property="longitude"     column="longitude"/>
+        <collection property="coupons"
+                    ofType="com.couzl.couzl.dto.CouponDto"
+                    columnPrefix="c_">
+            <id     property="couponId"    column="coupon_id"/>
+            <result property="storeId"     column="store_id"/>
+            <result property="couponName"  column="coupon_name"/>
+            <result property="benefit"     column="benefit"/>
+            <result property="totalCount"  column="total_count"/>
+            <result property="issuedCount" column="issued_count"/>
+            <result property="expireDate"  column="expire_date"/>
+        </collection>
+    </resultMap>
+
+    <select id="findStoresInBounds" resultMap="StoreWithCouponsMap">
+        SELECT s.store_id,
+               s.store_name,
+               s.category,
+               s.address,
+               s.emoji,
+               s.rating_avg,
+               s.latitude,
+               s.longitude,
+               c.coupon_id    AS c_coupon_id,
+               c.store_id     AS c_store_id,
+               c.coupon_name  AS c_coupon_name,
+               c.benefit      AS c_benefit,
+               c.total_count  AS c_total_count,
+               c.issued_count AS c_issued_count,
+               c.expire_date  AS c_expire_date
+          FROM tb_store s
+          LEFT JOIN tb_coupon c
+            ON c.store_id   = s.store_id
+           AND c.status     = 'ACTIVE'
+           AND c.is_deleted = 0
+           AND c.expire_date &gt;= CURDATE()
+           AND (c.total_count = 0 OR c.issued_count &lt; c.total_count)
+         WHERE s.status     = 'ACTIVE'
+           AND s.is_deleted = 0
+           AND s.latitude  IS NOT NULL
+           AND s.longitude IS NOT NULL
+           AND s.latitude  BETWEEN #{swLat} AND #{neLat}
+           AND s.longitude BETWEEN #{swLng} AND #{neLng}
+        <if test="category != null and category != ''">
+           AND s.category = #{category}
+        </if>
+         ORDER BY s.store_id, c.coupon_id
+    </select>
+
+</mapper>

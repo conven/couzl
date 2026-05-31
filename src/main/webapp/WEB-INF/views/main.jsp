@@ -9,15 +9,30 @@
     <title>Couzl - 홈</title>
     <link rel="stylesheet" href="/static/css/main.css">
 </head>
-<body>
+<body data-logged-in="${not empty sessionScope.LOGIN_USER}"
+      data-region-id="${empty regionId ? '' : regionId}"
+      data-region-in-url="${not empty param.regionId}">
 <div class="wrap">
 
     <!-- 1. 헤더 -->
     <jsp:include page="/WEB-INF/views/common/_header.jsp"/>
 
+    <!-- regionId 쿼리스트링 prefix 조립 (비로그인 + regionId 있을 때만) -->
+    <c:set var="regionQs" value=""/>
+    <c:if test="${empty sessionScope.LOGIN_USER and not empty regionId}">
+        <c:set var="regionQs" value="&regionId=${regionId}"/>
+    </c:if>
+    <c:set var="regionQsFirst" value=""/>
+    <c:if test="${empty sessionScope.LOGIN_USER and not empty regionId}">
+        <c:set var="regionQsFirst" value="?regionId=${regionId}"/>
+    </c:if>
+
     <!-- 2. 검색바 -->
     <div class="search-wrap">
         <form class="search-bar" method="get" action="/main">
+            <c:if test="${empty sessionScope.LOGIN_USER and not empty regionId}">
+                <input type="hidden" name="regionId" value="${regionId}"/>
+            </c:if>
             <c:if test="${not empty category}">
                 <input type="hidden" name="category" value="${fn:escapeXml(category)}"/>
             </c:if>
@@ -25,7 +40,7 @@
             <input type="text" name="keyword" placeholder="가맹점명을 검색해 보세요"
                    value="${fn:escapeXml(keyword)}" autocomplete="off">
             <c:if test="${not empty keyword}">
-                <a class="search-clear" href="/main<c:if test='${not empty category}'>?category=${fn:escapeXml(category)}</c:if>">×</a>
+                <a class="search-clear" href="/main${regionQsFirst}<c:if test='${not empty category}'>${empty regionQsFirst ? "?" : "&"}category=${fn:escapeXml(category)}</c:if>">×</a>
             </c:if>
         </form>
     </div>
@@ -77,44 +92,46 @@
     </div>
 
     <!-- 4. 카테고리 바 -->
-    <c:set var="catQs" value=""/>
+    <c:set var="catQs" value="${regionQs}"/>
     <c:if test="${not empty keyword}">
-        <c:set var="catQs" value="&keyword=${fn:escapeXml(keyword)}"/>
+        <c:set var="catQs" value="${catQs}&keyword=${fn:escapeXml(keyword)}"/>
     </c:if>
+    <c:set var="catBase" value="/main${regionQsFirst}"/>
+    <c:set var="catBaseSep" value="${empty regionQsFirst ? '?' : '&'}"/>
     <div class="category-section">
         <div class="category-bar" id="categoryBar">
             <a class="category-item ${empty category ? 'active' : ''}" data-category=""
-               href="/main<c:if test='${not empty keyword}'>?keyword=${fn:escapeXml(keyword)}</c:if>">
+               href="/main${regionQsFirst}<c:if test='${not empty keyword}'>${catBaseSep}keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">🏪</span>
                 <span class="cat-label">전체</span>
             </a>
             <a class="category-item ${category == 'CAFE' ? 'active' : ''}" data-category="CAFE"
-               href="/main?category=CAFE${catQs}">
+               href="${catBase}${catBaseSep}category=CAFE<c:if test='${not empty keyword}'>&keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">☕</span>
                 <span class="cat-label">카페</span>
             </a>
             <a class="category-item ${category == 'FOOD' ? 'active' : ''}" data-category="FOOD"
-               href="/main?category=FOOD${catQs}">
+               href="${catBase}${catBaseSep}category=FOOD<c:if test='${not empty keyword}'>&keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">🍽</span>
                 <span class="cat-label">음식점</span>
             </a>
             <a class="category-item ${category == 'BEAUTY' ? 'active' : ''}" data-category="BEAUTY"
-               href="/main?category=BEAUTY${catQs}">
+               href="${catBase}${catBaseSep}category=BEAUTY<c:if test='${not empty keyword}'>&keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">💄</span>
                 <span class="cat-label">뷰티</span>
             </a>
             <a class="category-item ${category == 'SHOPPING' ? 'active' : ''}" data-category="SHOPPING"
-               href="/main?category=SHOPPING${catQs}">
+               href="${catBase}${catBaseSep}category=SHOPPING<c:if test='${not empty keyword}'>&keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">🛍</span>
                 <span class="cat-label">쇼핑</span>
             </a>
             <a class="category-item ${category == 'FITNESS' ? 'active' : ''}" data-category="FITNESS"
-               href="/main?category=FITNESS${catQs}">
+               href="${catBase}${catBaseSep}category=FITNESS<c:if test='${not empty keyword}'>&keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">💪</span>
                 <span class="cat-label">피트니스</span>
             </a>
             <a class="category-item ${category == 'CONVENIENCE' ? 'active' : ''}" data-category="CONVENIENCE"
-               href="/main?category=CONVENIENCE${catQs}">
+               href="${catBase}${catBaseSep}category=CONVENIENCE<c:if test='${not empty keyword}'>&keyword=${fn:escapeXml(keyword)}</c:if>">
                 <span class="cat-icon">🏬</span>
                 <span class="cat-label">편의점</span>
             </a>

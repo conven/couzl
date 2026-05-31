@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -38,6 +39,9 @@
 
     <!-- 입력 폼 -->
     <form class="login-form" action="/login" method="POST">
+        <c:if test="${not empty redirect}">
+            <input type="hidden" name="redirect" value="${fn:escapeXml(redirect)}">
+        </c:if>
         <input type="text"     name="loginId"  class="input-field ${not empty errorMsg ? 'error' : ''}" placeholder="아이디">
         <input type="password" name="password" class="input-field ${not empty errorMsg ? 'error' : ''}" placeholder="비밀번호">
         <button type="submit" class="btn-login">로그인</button>
@@ -67,5 +71,16 @@
 
 </div>
 <script src="/static/js/common.js"></script>
+<script>
+    // 로그인 시도 시 비로그인 지역 캐시 제거 (서버 세션 USER_REGION 이 우선)
+    (function () {
+        var form = document.querySelector('form.login-form');
+        if (!form) return;
+        form.addEventListener('submit', function () {
+            try { localStorage.removeItem('selectedRegion'); } catch (e) {}
+        });
+    })();
+</script>
+<%@ include file="/WEB-INF/views/common/_footer.jsp" %>
 </body>
 </html>

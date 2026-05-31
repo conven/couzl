@@ -11,6 +11,7 @@ import com.couzl.couzl.service.CouponService.CouponExpiredException;
 import com.couzl.couzl.service.CouponService.CouponSoldOutException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,9 @@ public class StoreDetailController {
     private final StoreMapper storeMapper;
     private final CouponMapper couponMapper;
     private final CouponService couponService;
+
+    @Value("${kakao.map.key}")
+    private String kakaoMapKey;
 
     @GetMapping("/store")
     public String storeDetail(@RequestParam(required = false) Long storeId,
@@ -53,20 +57,25 @@ public class StoreDetailController {
 
         model.addAttribute("store", store);
         model.addAttribute("coupons", coupons);
+        model.addAttribute("kakaoMapKey", kakaoMapKey);
         return "store-detail";
     }
 
     @PostMapping("/store/coupon/issue")
     public String issueCoupon(@RequestParam Long couponId,
                               HttpSession session) {
-        UserDto user = (UserDto) session.getAttribute("LOGIN_USER");
-        if (user == null) {
-            return "redirect:/login?msg=unauthorized";
-        }
-
         Long storeIdForRedirect = null;
         CouponDto coupon = couponMapper.findByCouponId(couponId);
         if (coupon != null) storeIdForRedirect = coupon.getStoreId();
+
+        UserDto user = (UserDto) session.getAttribute("LOGIN_USER");
+        if (user == null) {
+            String redirect = storeIdForRedirect != null
+                    ? "/store?storeId=" + storeIdForRedirect
+                    : "/main";
+            return "redirect:/login?msg=unauthorized&redirect="
+                    + java.net.URLEncoder.encode(redirect, java.nio.charset.StandardCharsets.UTF_8);
+        }
 
         try {
             couponService.issueCoupon(couponId, user.getUserId());

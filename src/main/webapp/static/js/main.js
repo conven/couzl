@@ -1,3 +1,23 @@
+// ===== 비로그인: localStorage 의 지역으로 첫 진입 시 redirect =====
+(function () {
+    var body = document.body;
+    if (!body) return;
+    var loggedIn = body.dataset.loggedIn === 'true';
+    var hasRegionInUrl = body.dataset.regionInUrl === 'true';
+    if (loggedIn || hasRegionInUrl) return;
+
+    try {
+        var raw = localStorage.getItem('selectedRegion');
+        if (!raw) return;
+        var saved = JSON.parse(raw);
+        if (!saved || saved.regionId == null) return;
+        var url = new URL(window.location.href);
+        url.searchParams.set('regionId', saved.regionId);
+        // 페이지 진입 시 reload
+        window.location.replace(url.pathname + '?' + url.searchParams.toString() + url.hash);
+    } catch (e) {}
+})();
+
 // ===== 배너 자동 슬라이드 + dot indicator =====
 function initBanner() {
     var track = document.getElementById('bannerTrack');
