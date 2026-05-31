@@ -63,7 +63,7 @@
                     <div class="admin-avatar">
                         <c:choose>
                             <c:when test="${not empty user.profileImage}">
-                                <img src="/profile-image/${user.userId}" alt="프로필 이미지">
+                                <img src="/profile-image/${user.userId}?v=${user.imgVer}" alt="프로필 이미지">
                             </c:when>
                             <c:otherwise>
                                 <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true">

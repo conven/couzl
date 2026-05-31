@@ -142,16 +142,16 @@
 .map-sheet {
     position: fixed;
     left: 50%;
-    bottom: 0;
+    bottom: 60px; /* 하단 탭바(60px) 위로 띄움 */
     width: 100%;
     max-width: 430px;
     background: #fff;
     border-radius: 20px 20px 0 0;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    transform: translateX(-50%) translateY(100%);
+    transform: translateX(-50%) translateY(calc(100% + 60px));
     transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     z-index: 151;
-    max-height: 70vh;
+    max-height: calc(100vh - 80px); /* 탭바 + 여백 제외 */
     overflow-y: auto;
     box-sizing: border-box;
 }

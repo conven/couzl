@@ -66,12 +66,12 @@
                         <c:choose>
                             <c:when test="${not empty bnHref}">
                                 <a class="banner-card banner-image" href="${bnHref}"
-                                   style="background-image:url('/banner/image/${bn.bannerId}');"
+                                   style="background-image:url('/banner/image/${bn.bannerId}?v=${bn.imgVer}');"
                                    aria-label="${fn:escapeXml(bn.title)}"></a>
                             </c:when>
                             <c:otherwise>
                                 <div class="banner-card banner-image"
-                                     style="background-image:url('/banner/image/${bn.bannerId}');"
+                                     style="background-image:url('/banner/image/${bn.bannerId}?v=${bn.imgVer}');"
                                      aria-label="${fn:escapeXml(bn.title)}"></div>
                             </c:otherwise>
                         </c:choose>

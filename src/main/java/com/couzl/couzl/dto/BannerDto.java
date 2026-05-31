@@ -28,4 +28,5 @@ public class BannerDto {
     private String updatedBy;
     private LocalDateTime updatedAt;
     private Integer isDeleted;
+    private String imgVer;
 }

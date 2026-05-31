@@ -56,7 +56,8 @@
                u.profile_image_type,
                u.email_verified,
                u.created_at,
-               u.updated_at
+               u.updated_at,
+               DATE_FORMAT(u.updated_at, '%Y%m%d%H%i%s') AS img_ver
           FROM tb_user u
           LEFT JOIN tb_region r ON u.region_id = r.region_id
          WHERE u.user_id   = #{userId}

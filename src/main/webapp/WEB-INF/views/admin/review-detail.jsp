@@ -171,8 +171,8 @@
                     <c:otherwise>
                         <div class="rv-gallery">
                             <c:forEach var="img" items="${reviewImages}">
-                                <button type="button" onclick="openLightbox(${img.reviewImageId})">
-                                    <img src="/review-image/${img.reviewImageId}" alt="리뷰 사진" loading="lazy">
+                                <button type="button" onclick="openLightbox(${img.reviewImageId}, '${img.imgVer}')">
+                                    <img src="/review-image/${img.reviewImageId}?v=${img.imgVer}" alt="리뷰 사진" loading="lazy">
                                 </button>
                             </c:forEach>
                         </div>
@@ -218,8 +218,9 @@
 </div>
 
 <script>
-    function openLightbox(id) {
-        document.getElementById('lightboxImg').src = '/review-image/' + id;
+    function openLightbox(id, ver) {
+        var url = '/review-image/' + id + (ver ? '?v=' + ver : '');
+        document.getElementById('lightboxImg').src = url;
         document.getElementById('lightbox').classList.add('is-open');
         document.body.style.overflow = 'hidden';
     }

@@ -59,7 +59,14 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--color-text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+}
+
+.cu-coupon-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-sub);
+    margin-bottom: 10px;
 }
 
 .cu-benefit {

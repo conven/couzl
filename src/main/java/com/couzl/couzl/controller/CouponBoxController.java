@@ -3,6 +3,7 @@ package com.couzl.couzl.controller;
 import com.couzl.couzl.dto.UserCouponDto;
 import com.couzl.couzl.dto.UserDto;
 import com.couzl.couzl.service.CouponService;
+import com.couzl.couzl.service.CouponService.CouponNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,12 @@ public class CouponBoxController {
         UserDto user = (UserDto) session.getAttribute("LOGIN_USER");
         if (user == null) return "redirect:/login?msg=unauthorized";
 
-        UserCouponDto uc = couponService.getCouponDetail(userCouponId, user.getUserId());
+        UserCouponDto uc;
+        try {
+            uc = couponService.getCouponDetail(userCouponId, user.getUserId());
+        } catch (CouponNotFoundException e) {
+            return "redirect:/coupon-box";
+        }
         model.addAttribute("userCoupon", uc);
         return "coupon-use";
     }

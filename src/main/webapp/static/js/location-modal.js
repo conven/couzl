@@ -69,12 +69,9 @@ const LocationModal = (() => {
 
         close();
 
-        // 지역 기반 데이터 갱신 — 현재 경로에 regionId 만 갈아끼우고 reload
-        const url = new URL(window.location.href);
-        url.searchParams.set('regionId', regionId);
-        // 페이지네이션은 초기화
-        url.searchParams.delete('page');
-        window.location.href = url.pathname + '?' + url.searchParams.toString() + url.hash;
+        // /main 으로 이동하며 regionId 적용 — /store, /map 등 비-/main 경로에서도 일관된 결과
+        // 이미 /main 인 경우에도 category/keyword/page 는 리셋 (지역 변경은 새 컨텍스트로 간주)
+        window.location.href = '/main?regionId=' + encodeURIComponent(regionId);
     }
 
     function _selectLoggedIn(regionId) {

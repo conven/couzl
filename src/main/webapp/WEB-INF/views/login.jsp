@@ -22,9 +22,9 @@
         <p class="logo-sub">로그인하고 혜택을 받아보세요</p>
     </div>
 
-    <!-- 비인가 접근 메시지 -->
+    <!-- 로그인 필요 메시지 -->
     <c:if test="${param.msg == 'unauthorized'}">
-        <p class="login-error-msg login-unauthorized-msg">정상적인 접근이 아닙니다. 로그인 후 이용해주세요</p>
+        <p class="login-error-msg login-unauthorized-msg">로그인이 필요합니다</p>
     </c:if>
 
     <!-- 회원가입 완료 메시지 -->
@@ -81,6 +81,6 @@
         });
     })();
 </script>
-<%@ include file="/WEB-INF/views/common/_footer.jsp" %>
+<jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>
 </body>
 </html>

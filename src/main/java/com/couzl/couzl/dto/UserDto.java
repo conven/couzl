@@ -26,4 +26,5 @@ public class UserDto {
     private String emailVerified;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String imgVer;
 }

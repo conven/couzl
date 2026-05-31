@@ -14,6 +14,7 @@
                b.display_order,
                b.start_date,
                b.end_date,
+               DATE_FORMAT(b.updated_at, '%Y%m%d%H%i%s') AS img_ver,
                CASE
                    WHEN b.link_type = 'STORE'  THEN s.store_name
                    WHEN b.link_type = 'COUPON' THEN c.coupon_name
@@ -52,6 +53,7 @@
                s.status,
                s.latitude,
                s.longitude,
+               DATE_FORMAT(s.updated_at, '%Y%m%d%H%i%s') AS img_ver,
                r.region_name,
                (SELECT COUNT(*)
                   FROM tb_user_coupon uc
@@ -108,6 +110,7 @@
                s.status,
                s.latitude,
                s.longitude,
+               DATE_FORMAT(s.updated_at, '%Y%m%d%H%i%s') AS img_ver,
                r.region_name,
                (SELECT COUNT(*)
                   FROM tb_review rv

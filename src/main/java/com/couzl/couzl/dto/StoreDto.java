@@ -26,6 +26,7 @@ public class StoreDto {
 
     private byte[] storeImage;
     private String storeImageType;
+    private String imgVer;
     private String adminLoginId;
     private String regionName;
     private Long categoryId;

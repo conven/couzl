@@ -13,6 +13,7 @@
         <result property="ratingAvg"     column="rating_avg"/>
         <result property="latitude"      column="latitude"/>
         <result property="longitude"     column="longitude"/>
+        <result property="imgVer"        column="img_ver"/>
         <collection property="coupons"
                     ofType="com.couzl.couzl.dto.CouponDto"
                     columnPrefix="c_">
@@ -35,6 +36,7 @@
                s.rating_avg,
                s.latitude,
                s.longitude,
+               DATE_FORMAT(s.updated_at, '%Y%m%d%H%i%s') AS img_ver,
                c.coupon_id    AS c_coupon_id,
                c.store_id     AS c_store_id,
                c.coupon_name  AS c_coupon_name,

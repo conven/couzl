@@ -15,4 +15,5 @@ public class ReviewImageDto {
     private String imageType;
     private Integer sortOrder;
     private LocalDateTime createdAt;
+    private String imgVer;
 }

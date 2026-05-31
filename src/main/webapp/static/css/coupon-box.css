@@ -102,7 +102,14 @@
     font-size: 12px;
     color: var(--color-text-muted);
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+}
+
+.cb-coupon-name {
+    font-size: 13px;
+    color: var(--color-text-sub);
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .cb-coupon-benefit {
@@ -116,6 +123,11 @@
 .cb-coupon-expire {
     font-size: 12px;
     color: var(--color-text-sub);
+}
+
+.cb-coupon-expire-soon {
+    color: #FF3B30;
+    font-weight: 700;
 }
 
 .cb-emoji-circle {
@@ -220,5 +232,11 @@
     font-size: 15px;
     font-weight: 600;
     color: var(--color-text-muted);
+}
+
+.cb-empty-cta {
+    width: auto;
+    margin-top: 16px;
+    padding: 10px 22px;
 }
 

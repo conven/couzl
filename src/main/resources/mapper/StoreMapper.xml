@@ -54,7 +54,8 @@
                s.rating_avg,
                s.status,
                s.latitude,
-               s.longitude
+               s.longitude,
+               DATE_FORMAT(s.updated_at, '%Y%m%d%H%i%s') AS img_ver
           FROM tb_store s
           LEFT JOIN tb_region   r ON s.region_id   = r.region_id
           LEFT JOIN tb_category c ON s.category_id = c.category_id

@@ -22,6 +22,7 @@
     <div class="cu-section">
         <div class="cu-coupon-card">
             <p class="cu-store-name">${fn:escapeXml(userCoupon.storeName)}</p>
+            <p class="cu-coupon-name">${fn:escapeXml(userCoupon.couponName)}</p>
             <p class="cu-benefit">${fn:escapeXml(userCoupon.benefit)}</p>
             <div class="cu-meta-row">
                 <span class="cu-expire">~${userCoupon.expireDate}</span>

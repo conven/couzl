@@ -32,7 +32,7 @@
 
     <!-- 2. 가맹점 이미지 -->
     <div class="store-image">
-        <img src="/store/image/${store.storeId}"
+        <img src="/store/image/${store.storeId}?v=${store.imgVer}"
              alt="${fn:escapeXml(store.storeName)}"
              onerror="this.onerror=null;this.src='/static/images/default-store.png';">
         <c:if test="${not empty store.emoji}">

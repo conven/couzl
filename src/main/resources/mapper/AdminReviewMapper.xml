@@ -83,7 +83,8 @@
                review_id,
                image_type,
                sort_order,
-               created_at
+               created_at,
+               DATE_FORMAT(created_at, '%Y%m%d%H%i%s') AS img_ver
           FROM tb_review_image
          WHERE review_id  = #{reviewId}
            AND is_deleted = 0

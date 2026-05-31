@@ -31,9 +31,10 @@
 
         <c:choose>
             <c:when test="${empty userCoupons}">
-                <div style="text-align:center; padding:60px 16px;">
-                    <p style="margin:0 0 16px; color:#888; font-size:14px;">보유한 쿠폰이 없습니다</p>
-                    <button onclick="goTo('/main')" style="padding:10px 20px; background:#FFD60A; color:#1a1a1a; border:none; border-radius:8px; font-weight:700; cursor:pointer;">
+                <div class="cb-empty">
+                    <div class="cb-empty-icon">🎟</div>
+                    <p class="cb-empty-text">보유한 쿠폰이 없습니다</p>
+                    <button type="button" class="btn-coupon-use cb-empty-cta" onclick="goTo('/main')">
                         쿠폰 둘러보기
                     </button>
                 </div>
@@ -56,9 +57,9 @@
                                         <c:when test="${uc.status == 'EXPIRED'}"><span class="cb-status-badge">기간만료</span></c:when>
                                     </c:choose>
                                     <p class="cb-coupon-store">${fn:escapeXml(uc.storeName)}</p>
+                                    <p class="cb-coupon-name">${fn:escapeXml(uc.couponName)}</p>
                                     <p class="cb-coupon-benefit">${fn:escapeXml(uc.benefit)}</p>
-                                    <span class="cb-coupon-expire"
-                                          style="${isExpiringSoon ? 'color:#FF3B30;font-weight:700;' : ''}">
+                                    <span class="cb-coupon-expire ${isExpiringSoon ? 'cb-coupon-expire-soon' : ''}">
                                         ~${uc.expireDate}
                                     </span>
                                 </div>

@@ -118,6 +118,6 @@
 </div>
 <script src="/static/js/common.js"></script>
 <script src="/static/js/register.js"></script>
-<%@ include file="/WEB-INF/views/common/_footer.jsp" %>
+<jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>
 </body>
 </html>

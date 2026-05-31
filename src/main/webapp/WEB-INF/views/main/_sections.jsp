@@ -31,7 +31,7 @@
                 <c:forEach var="st" items="${popularStores}">
                     <a class="popular-card" href="/store?storeId=${st.storeId}">
                         <div class="popular-image">
-                            <img src="/store/image/${st.storeId}" alt="${fn:escapeXml(st.storeName)}"
+                            <img src="/store/image/${st.storeId}?v=${st.imgVer}" alt="${fn:escapeXml(st.storeName)}"
                                  onerror="this.style.display='none'">
                             <c:if test="${not empty st.emoji}">
                                 <span class="popular-emoji">${st.emoji}</span>
@@ -132,7 +132,7 @@
                 <c:forEach var="st" items="${stores}">
                     <a class="shop-card" href="/store?storeId=${st.storeId}">
                         <div class="shop-image">
-                            <img src="/store/image/${st.storeId}" alt="${fn:escapeXml(st.storeName)}"
+                            <img src="/store/image/${st.storeId}?v=${st.imgVer}" alt="${fn:escapeXml(st.storeName)}"
                                  onerror="this.style.display='none'">
                             <c:if test="${not empty st.emoji}">
                                 <span class="shop-emoji">${st.emoji}</span>

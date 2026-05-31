@@ -194,7 +194,7 @@
               '<div class="sheet-handle"></div>'
             + '<div class="sheet-content">'
             +   '<div class="store-header">'
-            +     '<img src="/store/image/' + store.storeId + '" class="store-thumb"'
+            +     '<img src="/store/image/' + store.storeId + (store.imgVer ? '?v=' + store.imgVer : '') + '" class="store-thumb"'
             +          ' onerror="this.onerror=null;this.src=\'/static/images/default-store.png\'">'
             +     '<div class="store-info">'
             +       '<div class="store-title">'
