@@ -3,10 +3,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <%@ include file="/WEB-INF/views/common/_meta.jsp" %>
     <title>내 주변 - Couzl</title>
-    <link rel="stylesheet" href="/static/css/common.css">
     <link rel="stylesheet" href="/static/css/map.css">
 </head>
 <body>

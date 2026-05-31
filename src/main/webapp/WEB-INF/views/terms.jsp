@@ -2,11 +2,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%@ include file="/WEB-INF/views/common/_meta.jsp" %>
     <title>이용약관 - Couzl</title>
-    <jsp:include page="/WEB-INF/views/common/header.jsp"/>
-    <link rel="stylesheet" href="/static/css/common.css">
     <style>
         .doc-wrap {
             max-width: 430px;

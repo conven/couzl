@@ -4,11 +4,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%@ include file="/WEB-INF/views/common/_meta.jsp" %>
     <title>프로필 수정 - Couzl</title>
-    <jsp:include page="/WEB-INF/views/common/header.jsp"/>
-    <link rel="stylesheet" href="/static/css/common.css">
     <link rel="stylesheet" href="/static/css/profile-edit.css">
 </head>
 <body>

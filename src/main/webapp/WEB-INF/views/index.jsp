@@ -2,9 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/_meta.jsp" %>
     <title>Couzl</title>
-    <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 </head>
 <body>
     <h1>Hello Couzl</h1>
