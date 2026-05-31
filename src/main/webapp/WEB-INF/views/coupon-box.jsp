@@ -18,25 +18,85 @@
         <span class="coupon-count-badge">${userCoupons.size()}</span>
     </div>
 
+    <!-- filter prefix 조립: 탭 링크가 keyword/category/regionId 를 보존 -->
+    <c:set var="filterQsTail" value=""/>
+    <c:if test="${not empty keyword}">
+        <c:set var="filterQsTail" value="${filterQsTail}&keyword=${fn:escapeXml(keyword)}"/>
+    </c:if>
+    <c:if test="${not empty category}">
+        <c:set var="filterQsTail" value="${filterQsTail}&category=${fn:escapeXml(category)}"/>
+    </c:if>
+    <c:if test="${not empty regionId}">
+        <c:set var="filterQsTail" value="${filterQsTail}&regionId=${regionId}"/>
+    </c:if>
+    <c:set var="allTabHref" value="/coupon-box"/>
+    <c:if test="${not empty filterQsTail}">
+        <c:set var="allTabHref" value="/coupon-box?${fn:substring(filterQsTail, 1, fn:length(filterQsTail))}"/>
+    </c:if>
+
     <!-- 2. 탭 메뉴 -->
     <div class="cb-tab-menu">
-        <a href="/coupon-box"               class="cb-tab-item ${empty status ? 'active' : ''}">전체</a>
-        <a href="/coupon-box?status=AVAILABLE" class="cb-tab-item ${status == 'AVAILABLE' ? 'active' : ''}">사용가능</a>
-        <a href="/coupon-box?status=USED"      class="cb-tab-item ${status == 'USED'      ? 'active' : ''}">사용완료</a>
-        <a href="/coupon-box?status=EXPIRED"   class="cb-tab-item ${status == 'EXPIRED'   ? 'active' : ''}">만료</a>
+        <a href="${allTabHref}"                              class="cb-tab-item ${empty status ? 'active' : ''}">전체</a>
+        <a href="/coupon-box?status=AVAILABLE${filterQsTail}" class="cb-tab-item ${status == 'AVAILABLE' ? 'active' : ''}">사용가능</a>
+        <a href="/coupon-box?status=USED${filterQsTail}"      class="cb-tab-item ${status == 'USED'      ? 'active' : ''}">사용완료</a>
+        <a href="/coupon-box?status=EXPIRED${filterQsTail}"   class="cb-tab-item ${status == 'EXPIRED'   ? 'active' : ''}">만료</a>
     </div>
+
+    <!-- 2-1. 검색/필터 -->
+    <form class="cb-filter" method="get" action="/coupon-box">
+        <c:if test="${not empty status}">
+            <input type="hidden" name="status" value="${fn:escapeXml(status)}">
+        </c:if>
+        <div class="cb-filter-search">
+            <span class="cb-filter-icon">🔍</span>
+            <input type="text" name="keyword" class="cb-filter-input"
+                   placeholder="쿠폰명/가맹점/혜택 검색"
+                   value="${fn:escapeXml(keyword)}" autocomplete="off">
+            <c:if test="${not empty keyword or not empty category or not empty regionId}">
+                <a class="cb-filter-clear" href="/coupon-box<c:if test='${not empty status}'>?status=${fn:escapeXml(status)}</c:if>">초기화</a>
+            </c:if>
+        </div>
+        <div class="cb-filter-row">
+            <select name="category" class="cb-filter-select" onchange="this.form.submit()">
+                <option value=""               ${empty category               ? 'selected' : ''}>전체 카테고리</option>
+                <option value="CAFE"          ${category == 'CAFE'           ? 'selected' : ''}>☕ 카페</option>
+                <option value="FOOD"          ${category == 'FOOD'           ? 'selected' : ''}>🍽 음식점</option>
+                <option value="BEAUTY"        ${category == 'BEAUTY'         ? 'selected' : ''}>💄 뷰티</option>
+                <option value="SHOPPING"      ${category == 'SHOPPING'       ? 'selected' : ''}>🛍 쇼핑</option>
+                <option value="FITNESS"       ${category == 'FITNESS'        ? 'selected' : ''}>💪 피트니스</option>
+                <option value="CONVENIENCE"   ${category == 'CONVENIENCE'    ? 'selected' : ''}>🏬 편의점</option>
+            </select>
+            <select name="regionId" class="cb-filter-select" onchange="this.form.submit()">
+                <option value=""              ${empty regionId               ? 'selected' : ''}>전체 지역</option>
+                <c:forEach var="r" items="${activeRegions}">
+                    <option value="${r.regionId}" ${regionId == r.regionId ? 'selected' : ''}>${fn:escapeXml(r.regionName)}</option>
+                </c:forEach>
+            </select>
+        </div>
+    </form>
 
     <!-- 3. 쿠폰 리스트 -->
     <div class="cb-tab-content active">
 
         <c:choose>
             <c:when test="${empty userCoupons}">
+                <c:set var="hasFilter" value="${not empty keyword or not empty category or not empty regionId or not empty status}"/>
                 <div class="cb-empty">
                     <div class="cb-empty-icon">🎟</div>
-                    <p class="cb-empty-text">보유한 쿠폰이 없습니다</p>
-                    <button type="button" class="btn-coupon-use cb-empty-cta" onclick="goTo('/main')">
-                        쿠폰 둘러보기
-                    </button>
+                    <c:choose>
+                        <c:when test="${hasFilter}">
+                            <p class="cb-empty-text">조건에 맞는 쿠폰이 없습니다</p>
+                            <button type="button" class="btn-coupon-use cb-empty-cta" onclick="goTo('/coupon-box')">
+                                전체 보기
+                            </button>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="cb-empty-text">보유한 쿠폰이 없습니다</p>
+                            <button type="button" class="btn-coupon-use cb-empty-cta" onclick="goTo('/main')">
+                                쿠폰 둘러보기
+                            </button>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </c:when>
             <c:otherwise>

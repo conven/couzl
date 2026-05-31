@@ -71,8 +71,12 @@ public class CouponService {
         couponMapper.incrementIssuedCount(couponId);
     }
 
-    public List<UserCouponDto> getUserCoupons(Long userId, String status) {
-        List<UserCouponDto> list = couponMapper.findUserCoupons(userId, status);
+    public List<UserCouponDto> getUserCoupons(Long userId, String status,
+                                              String keyword, String category, Long regionId) {
+        String k = (keyword == null) ? null : keyword.trim();
+        if (k != null && k.isEmpty()) k = null;
+        String c = (category == null || category.isBlank()) ? null : category;
+        List<UserCouponDto> list = couponMapper.findUserCoupons(userId, status, k, c, regionId);
         for (UserCouponDto uc : list) {
             uc.setCanWriteReview(isReviewWritable(uc));
         }

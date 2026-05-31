@@ -69,17 +69,33 @@ const LocationModal = (() => {
 
         close();
 
-        // /main 으로 이동하며 regionId 적용 — /store, /map 등 비-/main 경로에서도 일관된 결과
-        // 이미 /main 인 경우에도 category/keyword/page 는 리셋 (지역 변경은 새 컨텍스트로 간주)
-        window.location.href = '/main?regionId=' + encodeURIComponent(regionId);
+        // 현재 페이지에 머문 채 reload
+        // 단, /main 이면 regionId 파라미터를 새 값으로 갱신 (페이지네이션은 리셋)
+        const url = new URL(window.location.href);
+        if (url.pathname === '/main') {
+            url.searchParams.set('regionId', String(regionId));
+            url.searchParams.delete('page');
+            const qs = url.searchParams.toString();
+            window.location.href = url.pathname + (qs ? '?' + qs : '') + url.hash;
+        } else {
+            window.location.reload();
+        }
     }
 
     function _selectLoggedIn(regionId) {
-        const form = document.getElementById('locationModalForm');
-        const input = document.getElementById('locationModalRegionId');
-        if (!form || !input) return;
-        input.value = regionId;
-        form.submit();
+        close();
+        // POST /location 로 세션·DB 갱신만 시키고 응답(리다이렉트)은 무시 → 현재 페이지 reload
+        fetch('/location', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: 'regionId=' + encodeURIComponent(regionId)
+        })
+            .then(function () { window.location.reload(); })
+            .catch(function () { window.location.reload(); });
     }
 
     function select(regionId, regionName) {

@@ -22,14 +22,21 @@ public class CouponBoxController {
 
     @GetMapping("/coupon-box")
     public String couponBox(@RequestParam(required = false) String status,
+                            @RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) String category,
+                            @RequestParam(required = false) Long regionId,
                             HttpSession session,
                             Model model) {
         UserDto user = (UserDto) session.getAttribute("LOGIN_USER");
         if (user == null) return "redirect:/login?msg=unauthorized";
 
-        List<UserCouponDto> userCoupons = couponService.getUserCoupons(user.getUserId(), status);
+        List<UserCouponDto> userCoupons = couponService.getUserCoupons(
+                user.getUserId(), status, keyword, category, regionId);
         model.addAttribute("userCoupons", userCoupons);
         model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+        model.addAttribute("regionId", regionId);
         return "coupon-box";
     }
 

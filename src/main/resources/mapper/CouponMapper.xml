@@ -81,7 +81,9 @@
                co.condition_text,
                co.expire_date,
                co.store_id,
-               s.store_name
+               s.store_name,
+               s.category,
+               s.region_id
           FROM tb_user_coupon uc
           JOIN tb_coupon co ON uc.coupon_id = co.coupon_id
           JOIN tb_store  s  ON co.store_id  = s.store_id
@@ -89,6 +91,17 @@
            AND uc.is_deleted = 0
            <if test="status != null and status != ''">
                AND uc.status = #{status}
+           </if>
+           <if test="category != null and category != ''">
+               AND s.category = #{category}
+           </if>
+           <if test="regionId != null">
+               AND s.region_id = #{regionId}
+           </if>
+           <if test="keyword != null and keyword != ''">
+               AND (co.coupon_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR s.store_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR co.benefit   LIKE CONCAT('%', #{keyword}, '%'))
            </if>
          ORDER BY uc.created_at DESC
     </select>

@@ -48,10 +48,31 @@
     box-sizing: border-box;
 }
 
+html, body {
+    /* 더블탭 줌 / 비표준 제스처 차단 (iOS 핀치는 JS 에서 별도 처리) */
+    touch-action: manipulation;
+    -ms-touch-action: manipulation;
+}
+
 body {
     font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
     background-color: var(--color-bg);
     color: var(--color-text);
+}
+
+/* iOS Safari: 입력칸 font-size < 16px 일 때 포커스 시 자동 줌 발생 → 모바일에서만 16px 강제 */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="url"],
+    select,
+    textarea {
+        font-size: 16px;
+    }
 }
 
 .wrap {

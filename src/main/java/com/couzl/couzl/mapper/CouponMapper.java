@@ -25,7 +25,10 @@ public interface CouponMapper {
     void incrementIssuedCount(@Param("couponId") Long couponId);
 
     List<UserCouponDto> findUserCoupons(@Param("userId") Long userId,
-                                        @Param("status") String status);
+                                        @Param("status") String status,
+                                        @Param("keyword") String keyword,
+                                        @Param("category") String category,
+                                        @Param("regionId") Long regionId);
 
     UserCouponDto findByUserCouponId(@Param("userCouponId") Long userCouponId);
 
