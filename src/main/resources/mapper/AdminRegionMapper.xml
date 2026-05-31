@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminRegionMapper">
+
+    <sql id="regionWithCounts">
+        r.region_id,
+        r.region_name,
+        r.is_active,
+        r.created_by,
+        r.created_at,
+        r.updated_by,
+        r.updated_at,
+        (SELECT COUNT(*) FROM tb_store s
+          WHERE s.region_id  = r.region_id
+            AND s.status     = 'ACTIVE'
+            AND s.is_deleted = 0) AS store_count,
+        (SELECT COUNT(*) FROM tb_user u
+          WHERE u.region_id  = r.region_id
+            AND u.is_deleted = 0) AS user_count
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.RegionDto">
+        SELECT <include refid="regionWithCounts"/>
+          FROM tb_region r
+         WHERE r.is_deleted = 0
+         <if test="keyword != null and keyword != ''">
+             AND r.region_name LIKE CONCAT('%', #{keyword}, '%')
+         </if>
+         <if test="isActive != null">
+             AND r.is_active = #{isActive}
+         </if>
+         ORDER BY r.region_name ASC
+    </select>
+
+    <select id="findByRegionId" resultType="com.couzl.couzl.dto.RegionDto">
+        SELECT <include refid="regionWithCounts"/>
+          FROM tb_region r
+         WHERE r.region_id  = #{regionId}
+           AND r.is_deleted = 0
+    </select>
+
+    <insert id="insert" parameterType="com.couzl.couzl.dto.RegionDto"
+            useGeneratedKeys="true" keyProperty="regionId">
+        INSERT INTO tb_region (region_name, is_active, created_by, updated_by)
+        VALUES (#{regionName}, 1, #{createdBy}, #{createdBy})
+    </insert>
+
+    <update id="update" parameterType="com.couzl.couzl.dto.RegionDto">
+        UPDATE tb_region
+           SET region_name = #{regionName},
+               updated_by  = #{updatedBy},
+               updated_at  = NOW()
+         WHERE region_id   = #{regionId}
+           AND is_deleted  = 0
+    </update>
+
+    <update id="updateActive">
+        UPDATE tb_region
+           SET is_active  = #{isActive},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE region_id  = #{regionId}
+           AND is_deleted = 0
+    </update>
+
+    <select id="countByRegionName" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_region
+         WHERE region_name = #{regionName}
+           AND is_deleted  = 0
+           <if test="excludeRegionId != null">
+               AND region_id != #{excludeRegionId}
+           </if>
+    </select>
+
+</mapper>

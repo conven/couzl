@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminBannerMapper">
+
+    <sql id="bannerColumns">
+        b.banner_id,
+        b.title,
+        b.image_type,
+        b.link_type,
+        b.link_value,
+        b.display_order,
+        b.start_date,
+        b.end_date,
+        b.is_active,
+        b.created_by,
+        b.created_at,
+        b.updated_by,
+        b.updated_at,
+        CASE
+            WHEN b.link_type = 'STORE'  THEN s.store_name
+            WHEN b.link_type = 'COUPON' THEN c.coupon_name
+            ELSE NULL
+        END AS link_target_name,
+        CASE
+            WHEN b.link_type = 'STORE'  THEN b.link_value
+            WHEN b.link_type = 'COUPON' THEN CAST(c.store_id AS CHAR)
+            ELSE NULL
+        END AS link_store_id
+    </sql>
+
+    <sql id="bannerJoins">
+        LEFT JOIN tb_store  s ON b.link_type = 'STORE'
+                              AND b.link_value REGEXP '^[0-9]+$'
+                              AND s.store_id = CAST(b.link_value AS UNSIGNED)
+        LEFT JOIN tb_coupon c ON b.link_type = 'COUPON'
+                              AND b.link_value REGEXP '^[0-9]+$'
+                              AND c.coupon_id = CAST(b.link_value AS UNSIGNED)
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.BannerDto">
+        SELECT <include refid="bannerColumns"/>
+          FROM tb_banner b
+          <include refid="bannerJoins"/>
+         WHERE b.is_deleted = 0
+         <if test="isActive != null">
+             AND b.is_active = #{isActive}
+         </if>
+         ORDER BY b.display_order ASC, b.created_at DESC
+    </select>
+
+    <select id="findByBannerId" resultType="com.couzl.couzl.dto.BannerDto">
+        SELECT <include refid="bannerColumns"/>
+          FROM tb_banner b
+          <include refid="bannerJoins"/>
+         WHERE b.banner_id  = #{bannerId}
+           AND b.is_deleted = 0
+    </select>
+
+    <select id="findBannerImage" resultType="com.couzl.couzl.dto.BannerDto">
+        SELECT image      AS banner_image,
+               image_type
+          FROM tb_banner
+         WHERE banner_id  = #{bannerId}
+           AND is_deleted = 0
+    </select>
+
+    <insert id="insert" parameterType="com.couzl.couzl.dto.BannerDto"
+            useGeneratedKeys="true" keyProperty="bannerId">
+        INSERT INTO tb_banner (title, image, image_type, link_type, link_value,
+                               display_order, start_date, end_date, is_active,
+                               created_by, updated_by)
+        VALUES (#{title}, #{bannerImage, jdbcType=BLOB}, #{imageType},
+                #{linkType}, #{linkValue},
+                #{displayOrder}, #{startDate}, #{endDate}, #{isActive},
+                #{createdBy}, #{createdBy})
+    </insert>
+
+    <update id="update" parameterType="com.couzl.couzl.dto.BannerDto">
+        UPDATE tb_banner
+           SET title         = #{title},
+               link_type     = #{linkType},
+               link_value    = #{linkValue},
+               display_order = #{displayOrder},
+               start_date    = #{startDate},
+               end_date      = #{endDate},
+               is_active     = #{isActive},
+               <if test="bannerImage != null">
+                   image      = #{bannerImage, jdbcType=BLOB},
+                   image_type = #{imageType},
+               </if>
+               updated_by    = #{updatedBy},
+               updated_at    = NOW()
+         WHERE banner_id     = #{bannerId}
+           AND is_deleted    = 0
+    </update>
+
+    <update id="updateActive">
+        UPDATE tb_banner
+           SET is_active  = #{isActive},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE banner_id  = #{bannerId}
+           AND is_deleted = 0
+    </update>
+
+    <update id="updateOrder">
+        UPDATE tb_banner
+           SET display_order = #{displayOrder},
+               updated_by    = #{updatedBy},
+               updated_at    = NOW()
+         WHERE banner_id     = #{bannerId}
+           AND is_deleted    = 0
+    </update>
+
+    <update id="delete">
+        UPDATE tb_banner
+           SET is_deleted = 1,
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE banner_id  = #{bannerId}
+    </update>
+
+    <select id="findActiveBanners" resultType="com.couzl.couzl.dto.BannerDto">
+        SELECT b.banner_id,
+               b.title,
+               b.image_type,
+               b.link_type,
+               b.link_value,
+               b.display_order,
+               CASE
+                   WHEN b.link_type = 'COUPON' THEN CAST(c.store_id AS CHAR)
+                   ELSE NULL
+               END AS link_store_id
+          FROM tb_banner b
+          LEFT JOIN tb_coupon c ON b.link_type = 'COUPON'
+                                AND b.link_value REGEXP '^[0-9]+$'
+                                AND c.coupon_id = CAST(b.link_value AS UNSIGNED)
+         WHERE b.is_active  = 1
+           AND b.is_deleted = 0
+           AND (b.start_date IS NULL OR b.start_date &lt;= CURDATE())
+           AND (b.end_date   IS NULL OR b.end_date   &gt;= CURDATE())
+         ORDER BY b.display_order ASC, b.created_at DESC
+    </select>
+
+</mapper>

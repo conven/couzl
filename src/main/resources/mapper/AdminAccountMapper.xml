@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminAccountMapper">
+
+    <sql id="searchWhere">
+        AND a.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (a.login_id LIKE CONCAT('%', #{keyword}, '%')
+              OR a.name     LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="role != null and role != ''">
+            AND a.role = #{role}
+        </if>
+        <if test="status != null and status != ''">
+            AND a.status = #{status}
+        </if>
+    </sql>
+
+    <sql id="adminColumns">
+        a.admin_id,
+        a.login_id,
+        a.name,
+        a.role,
+        a.store_id,
+        s.store_name,
+        a.status,
+        a.last_login_at,
+        a.created_at,
+        a.updated_at
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.AdminDto">
+        SELECT <include refid="adminColumns"/>
+          FROM tb_admin a
+          LEFT JOIN tb_store s ON a.store_id = s.store_id
+         WHERE 1=1
+         <include refid="searchWhere"/>
+         ORDER BY a.created_at DESC
+         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_admin a
+         WHERE 1=1
+         <include refid="searchWhere"/>
+    </select>
+
+    <select id="findByAdminId" resultType="com.couzl.couzl.dto.AdminDto">
+        SELECT <include refid="adminColumns"/>
+          FROM tb_admin a
+          LEFT JOIN tb_store s ON a.store_id = s.store_id
+         WHERE a.admin_id   = #{adminId}
+           AND a.is_deleted = 0
+    </select>
+
+    <select id="countByLoginId" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_admin
+         WHERE login_id   = #{loginId}
+           AND is_deleted = 0
+           <if test="excludeAdminId != null">
+               AND admin_id != #{excludeAdminId}
+           </if>
+    </select>
+
+    <insert id="insert" parameterType="com.couzl.couzl.dto.AdminDto"
+            useGeneratedKeys="true" keyProperty="adminId">
+        INSERT INTO tb_admin (login_id, password, name, role, store_id, status,
+                              created_by, updated_by)
+        VALUES (#{loginId}, #{password}, #{name}, #{role}, #{storeId}, 'ACTIVE',
+                #{createdBy}, #{createdBy})
+    </insert>
+
+    <update id="updateInfo" parameterType="com.couzl.couzl.dto.AdminDto">
+        UPDATE tb_admin
+           SET name       = #{name},
+               role       = #{role},
+               store_id   = #{storeId},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE admin_id   = #{adminId}
+           AND is_deleted = 0
+    </update>
+
+    <update id="updatePassword">
+        UPDATE tb_admin
+           SET password   = #{password},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE admin_id   = #{adminId}
+           AND is_deleted = 0
+    </update>
+
+    <update id="updateStatus">
+        UPDATE tb_admin
+           SET status     = #{status},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE admin_id   = #{adminId}
+           AND is_deleted = 0
+    </update>
+
+</mapper>

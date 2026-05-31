@@ -10,6 +10,33 @@
     --border-radius: 12px;
 }
 
+/* ===== Toast ===== */
+.cz-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 92px;
+    transform: translateX(-50%);
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+.cz-toast-body {
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    color: #fff;
+}
+.cz-toast-body.success { background-color: #10b981; }
+.cz-toast-body.warning { background-color: #f97316; }
+.cz-toast-body.danger  { background-color: #ef4444; }
+.cz-toast-hide {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+}
+
 * {
     margin: 0;
     padding: 0;

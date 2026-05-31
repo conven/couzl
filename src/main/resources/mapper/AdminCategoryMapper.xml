@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminCategoryMapper">
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.CategoryDto">
+        SELECT c.category_id,
+               c.code,
+               c.name,
+               c.icon,
+               c.sort_order,
+               c.is_active,
+               c.created_at,
+               c.updated_at,
+               (SELECT COUNT(*) FROM tb_store s
+                 WHERE s.category_id = c.category_id
+                   AND s.is_deleted  = 0) AS store_count
+          FROM tb_category c
+         WHERE c.is_deleted = 0
+         ORDER BY c.sort_order, c.category_id
+    </select>
+
+    <select id="findAllActive" resultType="com.couzl.couzl.dto.CategoryDto">
+        SELECT category_id,
+               code,
+               name,
+               icon,
+               sort_order
+          FROM tb_category
+         WHERE is_active  = 1
+           AND is_deleted = 0
+         ORDER BY sort_order, category_id
+    </select>
+
+    <select id="findById" resultType="com.couzl.couzl.dto.CategoryDto">
+        SELECT category_id,
+               code,
+               name,
+               icon,
+               sort_order,
+               is_active,
+               created_at,
+               updated_at
+          FROM tb_category
+         WHERE category_id = #{categoryId}
+           AND is_deleted  = 0
+    </select>
+
+    <select id="countByCode" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_category
+         WHERE code        = #{code}
+           AND is_deleted  = 0
+           <if test="excludeId != null">
+               AND category_id != #{excludeId}
+           </if>
+    </select>
+
+    <insert id="insert" parameterType="com.couzl.couzl.dto.CategoryDto"
+            useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO tb_category (code, name, icon, sort_order, is_active,
+                                 created_by, updated_by)
+        VALUES (#{code}, #{name}, #{icon}, #{sortOrder}, #{isActive},
+                'admin', 'admin')
+    </insert>
+
+    <update id="update" parameterType="com.couzl.couzl.dto.CategoryDto">
+        UPDATE tb_category
+           SET code        = #{code},
+               name        = #{name},
+               icon        = #{icon},
+               sort_order  = #{sortOrder},
+               is_active   = #{isActive},
+               updated_by  = 'admin',
+               updated_at  = NOW()
+         WHERE category_id = #{categoryId}
+           AND is_deleted  = 0
+    </update>
+
+    <update id="updateActive">
+        UPDATE tb_category
+           SET is_active   = #{isActive},
+               updated_by  = #{updatedBy},
+               updated_at  = NOW()
+         WHERE category_id = #{categoryId}
+           AND is_deleted  = 0
+    </update>
+
+    <select id="countStoresUsingCategory" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_store
+         WHERE category_id = #{categoryId}
+           AND is_deleted  = 0
+    </select>
+
+</mapper>

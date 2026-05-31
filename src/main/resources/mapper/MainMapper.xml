@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.MainMapper">
+
+    <!-- ===== 활성 배너 (FO 메인) ===== -->
+    <select id="findActiveBanners" resultType="com.couzl.couzl.dto.BannerDto">
+        SELECT b.banner_id,
+               b.title,
+               b.image_type,
+               b.link_type,
+               b.link_value,
+               b.display_order,
+               b.start_date,
+               b.end_date,
+               CASE
+                   WHEN b.link_type = 'STORE'  THEN s.store_name
+                   WHEN b.link_type = 'COUPON' THEN c.coupon_name
+                   ELSE NULL
+               END AS link_target_name,
+               CASE
+                   WHEN b.link_type = 'COUPON' THEN c.store_id
+                   ELSE NULL
+               END AS coupon_store_id
+          FROM tb_banner b
+          LEFT JOIN tb_store  s ON b.link_type = 'STORE'
+                                AND b.link_value REGEXP '^[0-9]+$'
+                                AND s.store_id = CAST(b.link_value AS UNSIGNED)
+          LEFT JOIN tb_coupon c ON b.link_type = 'COUPON'
+                                AND b.link_value REGEXP '^[0-9]+$'
+                                AND c.coupon_id = CAST(b.link_value AS UNSIGNED)
+         WHERE b.is_active  = 1
+           AND b.is_deleted = 0
+           AND (b.start_date IS NULL OR b.start_date &lt;= CURDATE())
+           AND (b.end_date   IS NULL OR b.end_date   &gt;= CURDATE())
+         ORDER BY b.display_order ASC, b.created_at DESC
+    </select>
+
+    <!-- ===== 인기 가맹점 (USED 쿠폰 수 기준) ===== -->
+    <select id="findPopularStores" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT s.store_id,
+               s.region_id,
+               s.store_name,
+               s.category,
+               s.address,
+               s.phone,
+               s.business_hours,
+               s.description,
+               s.emoji,
+               s.rating_avg,
+               s.status,
+               s.latitude,
+               s.longitude,
+               r.region_name,
+               (SELECT COUNT(*)
+                  FROM tb_user_coupon uc
+                  JOIN tb_coupon co ON uc.coupon_id = co.coupon_id
+                 WHERE co.store_id   = s.store_id
+                   AND co.is_deleted = 0
+                   AND uc.status     = 'USED'
+                   AND uc.is_deleted = 0) AS used_count,
+               (SELECT COUNT(*)
+                  FROM tb_review rv
+                 WHERE rv.store_id   = s.store_id
+                   AND rv.status     = 'ACTIVE'
+                   AND rv.is_deleted = 0) AS review_count
+          FROM tb_store s
+          LEFT JOIN tb_region r ON s.region_id = r.region_id
+         WHERE s.status     = 'ACTIVE'
+           AND s.is_deleted = 0
+           <if test="regionId != null">
+               AND s.region_id = #{regionId}
+           </if>
+           <if test="category != null and category != ''">
+               AND s.category = #{category}
+           </if>
+         ORDER BY used_count DESC, s.rating_avg DESC, s.store_id DESC
+         LIMIT #{limit}
+    </select>
+
+    <!-- ===== 카테고리/검색 가맹점 목록 ===== -->
+    <sql id="storeListWhere">
+        WHERE s.status     = 'ACTIVE'
+          AND s.is_deleted = 0
+          <if test="regionId != null">
+              AND s.region_id = #{regionId}
+          </if>
+          <if test="category != null and category != ''">
+              AND s.category = #{category}
+          </if>
+          <if test="keyword != null and keyword != ''">
+              AND s.store_name LIKE CONCAT('%', #{keyword}, '%')
+          </if>
+    </sql>
+
+    <select id="findStoresByCategory" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT s.store_id,
+               s.region_id,
+               s.store_name,
+               s.category,
+               s.address,
+               s.phone,
+               s.business_hours,
+               s.description,
+               s.emoji,
+               s.rating_avg,
+               s.status,
+               s.latitude,
+               s.longitude,
+               r.region_name,
+               (SELECT COUNT(*)
+                  FROM tb_review rv
+                 WHERE rv.store_id   = s.store_id
+                   AND rv.status     = 'ACTIVE'
+                   AND rv.is_deleted = 0) AS review_count
+          FROM tb_store s
+          LEFT JOIN tb_region r ON s.region_id = r.region_id
+        <include refid="storeListWhere"/>
+         ORDER BY s.rating_avg DESC, s.store_id DESC
+         LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countStoresByCategory" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_store s
+        <include refid="storeListWhere"/>
+    </select>
+
+    <!-- ===== HOT 쿠폰 ===== -->
+    <select id="findHotCoupons" resultType="com.couzl.couzl.dto.CouponDto">
+        SELECT co.coupon_id,
+               co.store_id,
+               co.coupon_name,
+               co.benefit,
+               co.condition_text,
+               co.expire_date,
+               co.total_count,
+               co.issued_count,
+               co.max_per_user,
+               co.status,
+               co.created_at,
+               s.store_name
+          FROM tb_coupon co
+          JOIN tb_store  s ON co.store_id = s.store_id
+         WHERE co.status     = 'ACTIVE'
+           AND co.is_deleted = 0
+           AND s.status      = 'ACTIVE'
+           AND s.is_deleted  = 0
+           AND co.expire_date &gt;= CURDATE()
+           AND (co.total_count = 0 OR co.issued_count &lt; co.total_count)
+           <if test="regionId != null">
+               AND s.region_id = #{regionId}
+           </if>
+         ORDER BY co.issued_count DESC, co.coupon_id DESC
+         LIMIT #{limit}
+    </select>
+
+</mapper>

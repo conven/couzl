@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminUserMapper">
+
+    <sql id="searchWhere">
+        AND u.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (u.login_id LIKE CONCAT('%', #{keyword}, '%')
+              OR u.nickname LIKE CONCAT('%', #{keyword}, '%')
+              OR u.email    LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="status != null and status != ''">
+            AND u.status = #{status}
+        </if>
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.UserDto">
+        SELECT u.user_id,
+               u.login_id,
+               u.nickname,
+               u.email,
+               u.social_type,
+               u.status,
+               u.region_id,
+               r.region_name,
+               u.email_verified,
+               u.created_at,
+               u.updated_at
+          FROM tb_user u
+          LEFT JOIN tb_region r ON u.region_id = r.region_id
+         WHERE 1=1
+         <include refid="searchWhere"/>
+         ORDER BY u.created_at DESC
+         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_user u
+         WHERE 1=1
+         <include refid="searchWhere"/>
+    </select>
+
+    <select id="findByUserId" resultType="com.couzl.couzl.dto.UserDto">
+        SELECT u.user_id,
+               u.login_id,
+               u.nickname,
+               u.email,
+               u.social_type,
+               u.status,
+               u.region_id,
+               r.region_name,
+               u.profile_image,
+               u.profile_image_type,
+               u.email_verified,
+               u.created_at,
+               u.updated_at
+          FROM tb_user u
+          LEFT JOIN tb_region r ON u.region_id = r.region_id
+         WHERE u.user_id   = #{userId}
+           AND u.is_deleted = 0
+    </select>
+
+    <update id="updateStatus">
+        UPDATE tb_user
+           SET status     = #{status},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE user_id   = #{userId}
+           AND is_deleted = 0
+    </update>
+
+    <select id="findUserCoupons" resultType="com.couzl.couzl.dto.UserCouponDto">
+        SELECT uc.user_coupon_id,
+               uc.user_id,
+               uc.coupon_id,
+               uc.coupon_code,
+               c.coupon_name,
+               s.store_name,
+               c.benefit,
+               uc.status,
+               uc.used_at,
+               uc.created_at
+          FROM tb_user_coupon uc
+          JOIN tb_coupon c ON uc.coupon_id = c.coupon_id
+          JOIN tb_store  s ON c.store_id   = s.store_id
+         WHERE uc.user_id   = #{userId}
+           AND uc.is_deleted = 0
+         ORDER BY uc.created_at DESC
+    </select>
+
+</mapper>

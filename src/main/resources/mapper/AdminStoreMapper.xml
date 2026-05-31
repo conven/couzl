@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminStoreMapper">
+
+    <sql id="searchWhere">
+        AND s.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND s.store_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="categoryId != null">
+            AND s.category_id = #{categoryId}
+        </if>
+        <if test="status != null and status != ''">
+            AND s.status = #{status}
+        </if>
+        <if test="regionId != null">
+            AND s.region_id = #{regionId}
+        </if>
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT s.store_id,
+               s.region_id,
+               r.region_name,
+               s.category_id,
+               c.code AS category,
+               c.name AS category_name,
+               c.icon AS category_icon,
+               s.store_name,
+               s.address,
+               s.phone,
+               s.business_hours,
+               s.emoji,
+               s.rating_avg,
+               s.status,
+               s.latitude,
+               s.longitude,
+               s.created_at,
+               s.updated_at,
+               a.login_id AS admin_login_id
+          FROM tb_store s
+          LEFT JOIN tb_region   r ON s.region_id   = r.region_id
+          LEFT JOIN tb_category c ON s.category_id = c.category_id
+          LEFT JOIN tb_admin    a ON a.store_id    = s.store_id
+                                 AND a.role        = 'STORE_OWNER'
+                                 AND a.is_deleted  = 0
+         WHERE 1=1
+         <include refid="searchWhere"/>
+         ORDER BY s.created_at DESC
+         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_store s
+         WHERE 1=1
+         <include refid="searchWhere"/>
+    </select>
+
+    <select id="findByStoreId" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT s.store_id,
+               s.region_id,
+               r.region_name,
+               s.category_id,
+               c.code AS category,
+               c.name AS category_name,
+               c.icon AS category_icon,
+               s.store_name,
+               s.address,
+               s.phone,
+               s.business_hours,
+               s.description,
+               s.emoji,
+               s.rating_avg,
+               s.status,
+               s.latitude,
+               s.longitude,
+               s.created_at,
+               s.updated_at,
+               a.login_id AS admin_login_id
+          FROM tb_store s
+          LEFT JOIN tb_region   r ON s.region_id   = r.region_id
+          LEFT JOIN tb_category c ON s.category_id = c.category_id
+          LEFT JOIN tb_admin    a ON a.store_id    = s.store_id
+                                 AND a.role        = 'STORE_OWNER'
+                                 AND a.is_deleted  = 0
+         WHERE s.store_id   = #{storeId}
+           AND s.is_deleted = 0
+    </select>
+
+    <insert id="insert" parameterType="com.couzl.couzl.dto.StoreDto"
+            useGeneratedKeys="true" keyProperty="storeId">
+        INSERT INTO tb_store (region_id, category_id, category, store_name, address, phone,
+                              business_hours, description, emoji,
+                              latitude, longitude,
+                              store_image, store_image_type,
+                              status, created_by, updated_by)
+        VALUES (#{regionId}, #{categoryId}, #{category}, #{storeName}, #{address}, #{phone},
+                #{businessHours}, #{description}, #{emoji},
+                #{latitude}, #{longitude},
+                #{storeImage, jdbcType=BLOB}, #{storeImageType},
+                #{status}, #{adminLoginId}, #{adminLoginId})
+    </insert>
+
+    <update id="update" parameterType="com.couzl.couzl.dto.StoreDto">
+        UPDATE tb_store
+           SET store_name     = #{storeName},
+               category_id    = #{categoryId},
+               category       = #{category},
+               region_id      = #{regionId},
+               address        = #{address},
+               phone          = #{phone},
+               business_hours = #{businessHours},
+               description    = #{description},
+               emoji          = #{emoji},
+               latitude       = #{latitude},
+               longitude      = #{longitude},
+               status         = #{status},
+               <if test="storeImage != null">
+                   store_image      = #{storeImage, jdbcType=BLOB},
+                   store_image_type = #{storeImageType},
+               </if>
+               updated_by     = #{adminLoginId},
+               updated_at     = NOW()
+         WHERE store_id   = #{storeId}
+           AND is_deleted = 0
+    </update>
+
+    <update id="updateStatus">
+        UPDATE tb_store
+           SET status     = #{status},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE store_id   = #{storeId}
+           AND is_deleted = 0
+    </update>
+
+    <select id="findStoreImage" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT store_image,
+               store_image_type
+          FROM tb_store
+         WHERE store_id   = #{storeId}
+           AND is_deleted = 0
+    </select>
+
+    <select id="findAllRegions" resultType="com.couzl.couzl.dto.RegionDto">
+        SELECT region_id,
+               region_name
+          FROM tb_region
+         WHERE is_active  = 1
+           AND is_deleted = 0
+         ORDER BY region_name
+    </select>
+
+    <insert id="insertStoreOwnerAdmin" parameterType="com.couzl.couzl.dto.AdminDto"
+            useGeneratedKeys="true" keyProperty="adminId">
+        INSERT INTO tb_admin (login_id, password, name, role, store_id, status,
+                              created_by, updated_by)
+        VALUES (#{loginId}, #{password}, #{name}, 'STORE_OWNER', #{storeId}, 'ACTIVE',
+                'system', 'system')
+    </insert>
+
+</mapper>

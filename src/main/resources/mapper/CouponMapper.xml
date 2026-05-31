@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.CouponMapper">
+
+    <select id="findByCouponId" resultType="com.couzl.couzl.dto.CouponDto">
+        SELECT co.coupon_id,
+               co.store_id,
+               co.coupon_name,
+               co.benefit,
+               co.condition_text,
+               co.expire_date,
+               co.total_count,
+               co.issued_count,
+               co.max_per_user,
+               co.status,
+               co.created_at,
+               co.updated_at,
+               s.store_name
+          FROM tb_coupon co
+          LEFT JOIN tb_store s ON co.store_id = s.store_id
+         WHERE co.coupon_id  = #{couponId}
+           AND co.is_deleted = 0
+           AND co.status     = 'ACTIVE'
+    </select>
+
+    <select id="findActiveByStoreId" resultType="com.couzl.couzl.dto.CouponDto">
+        SELECT co.coupon_id,
+               co.store_id,
+               co.coupon_name,
+               co.benefit,
+               co.condition_text,
+               co.expire_date,
+               co.total_count,
+               co.issued_count,
+               co.max_per_user,
+               co.status,
+               co.created_at
+          FROM tb_coupon co
+         WHERE co.store_id   = #{storeId}
+           AND co.status     = 'ACTIVE'
+           AND co.is_deleted = 0
+         ORDER BY co.created_at DESC
+    </select>
+
+    <select id="countUserCoupon" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_user_coupon
+         WHERE user_id    = #{userId}
+           AND coupon_id  = #{couponId}
+           AND is_deleted = 0
+    </select>
+
+    <insert id="issueCoupon" parameterType="com.couzl.couzl.dto.UserCouponDto"
+            useGeneratedKeys="true" keyProperty="userCouponId">
+        INSERT INTO tb_user_coupon (user_id, coupon_id, coupon_code, status,
+                                    created_by, updated_by)
+        VALUES (#{userId}, #{couponId}, #{couponCode}, 'AVAILABLE',
+                #{createdBy}, #{createdBy})
+    </insert>
+
+    <update id="incrementIssuedCount">
+        UPDATE tb_coupon
+           SET issued_count = issued_count + 1,
+               updated_at   = NOW()
+         WHERE coupon_id    = #{couponId}
+           AND is_deleted   = 0
+    </update>
+
+    <select id="findUserCoupons" resultType="com.couzl.couzl.dto.UserCouponDto">
+        SELECT uc.user_coupon_id,
+               uc.user_id,
+               uc.coupon_id,
+               uc.coupon_code,
+               uc.status,
+               uc.used_at,
+               uc.created_at,
+               co.coupon_name,
+               co.benefit,
+               co.condition_text,
+               co.expire_date,
+               co.store_id,
+               s.store_name
+          FROM tb_user_coupon uc
+          JOIN tb_coupon co ON uc.coupon_id = co.coupon_id
+          JOIN tb_store  s  ON co.store_id  = s.store_id
+         WHERE uc.user_id    = #{userId}
+           AND uc.is_deleted = 0
+           <if test="status != null and status != ''">
+               AND uc.status = #{status}
+           </if>
+         ORDER BY uc.created_at DESC
+    </select>
+
+    <select id="findByUserCouponId" resultType="com.couzl.couzl.dto.UserCouponDto">
+        SELECT uc.user_coupon_id,
+               uc.user_id,
+               uc.coupon_id,
+               uc.coupon_code,
+               uc.status,
+               uc.used_at,
+               uc.created_at,
+               co.coupon_name,
+               co.benefit,
+               co.condition_text,
+               co.expire_date,
+               co.store_id,
+               s.store_name
+          FROM tb_user_coupon uc
+          JOIN tb_coupon co ON uc.coupon_id = co.coupon_id
+          JOIN tb_store  s  ON co.store_id  = s.store_id
+         WHERE uc.user_coupon_id = #{userCouponId}
+           AND uc.is_deleted     = 0
+    </select>
+
+    <select id="findByCouponCode" resultType="com.couzl.couzl.dto.UserCouponDto">
+        SELECT uc.user_coupon_id,
+               uc.user_id,
+               uc.coupon_id,
+               uc.coupon_code,
+               uc.status,
+               uc.used_at,
+               uc.created_at,
+               co.coupon_name,
+               co.benefit,
+               co.condition_text,
+               co.expire_date,
+               co.store_id,
+               s.store_name,
+               u.nickname AS user_nickname
+          FROM tb_user_coupon uc
+          JOIN tb_user   u  ON uc.user_id   = u.user_id
+          JOIN tb_coupon co ON uc.coupon_id = co.coupon_id
+          JOIN tb_store  s  ON co.store_id  = s.store_id
+         WHERE uc.coupon_code = #{couponCode}
+           AND uc.is_deleted  = 0
+    </select>
+
+    <update id="useCoupon">
+        UPDATE tb_user_coupon
+           SET status     = 'USED',
+               used_at    = NOW(),
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE user_coupon_id = #{userCouponId}
+           AND is_deleted     = 0
+    </update>
+
+    <select id="countReviewByUserCouponId" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_review
+         WHERE user_coupon_id = #{userCouponId}
+           AND status         = 'ACTIVE'
+           AND is_deleted     = 0
+    </select>
+
+</mapper>

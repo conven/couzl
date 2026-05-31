@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,226 +17,119 @@
 
     <!-- 2. 검색바 -->
     <div class="search-wrap">
-        <div class="search-bar">
+        <form class="search-bar" method="get" action="/main">
+            <c:if test="${not empty category}">
+                <input type="hidden" name="category" value="${fn:escapeXml(category)}"/>
+            </c:if>
             <span>🔍</span>
-            <input type="text" placeholder="가맹점, 쿠폰 검색" readonly>
-        </div>
+            <input type="text" name="keyword" placeholder="가맹점명을 검색해 보세요"
+                   value="${fn:escapeXml(keyword)}" autocomplete="off">
+            <c:if test="${not empty keyword}">
+                <a class="search-clear" href="/main<c:if test='${not empty category}'>?category=${fn:escapeXml(category)}</c:if>">×</a>
+            </c:if>
+        </form>
     </div>
 
     <!-- 3. 배너 슬라이더 -->
     <div class="banner-section">
-        <div class="banner-track">
-            <div class="banner-card banner-yellow">
-                <p class="banner-sub">신규 가맹점 혜택</p>
-                <h2 class="banner-title">신규 가맹점 쿠폰<br>20% 할인</h2>
-                <span class="banner-cta">지금 받기 →</span>
-            </div>
-            <div class="banner-card banner-dark">
-                <p class="banner-sub">이번 주 랭킹</p>
-                <h2 class="banner-title">이번 주 인기 쿠폰<br>TOP 5</h2>
-                <span class="banner-cta">확인하기 →</span>
-            </div>
-            <div class="banner-card banner-red">
-                <p class="banner-sub">특별 이벤트</p>
-                <h2 class="banner-title">주말 특별<br>이벤트</h2>
-                <span class="banner-cta">참여하기 →</span>
-            </div>
-        </div>
-        <div class="banner-dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
+        <c:choose>
+            <c:when test="${not empty banners}">
+                <div class="banner-track" id="bannerTrack">
+                    <c:forEach var="bn" items="${banners}">
+                        <c:choose>
+                            <c:when test="${bn.linkType == 'STORE' and not empty bn.linkValue}">
+                                <c:set var="bnHref" value="/store?storeId=${bn.linkValue}"/>
+                            </c:when>
+                            <c:when test="${bn.linkType == 'COUPON' and not empty bn.couponStoreId}">
+                                <c:set var="bnHref" value="/store?storeId=${bn.couponStoreId}#coupon"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="bnHref" value=""/>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <c:choose>
+                            <c:when test="${not empty bnHref}">
+                                <a class="banner-card banner-image" href="${bnHref}"
+                                   style="background-image:url('/banner/image/${bn.bannerId}');"
+                                   aria-label="${fn:escapeXml(bn.title)}"></a>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="banner-card banner-image"
+                                     style="background-image:url('/banner/image/${bn.bannerId}');"
+                                     aria-label="${fn:escapeXml(bn.title)}"></div>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </div>
+                <c:if test="${banners.size() > 1}">
+                    <div class="banner-dots" id="bannerDots">
+                        <c:forEach var="bn" items="${banners}" varStatus="loop">
+                            <span class="dot ${loop.first ? 'active' : ''}" data-index="${loop.index}"></span>
+                        </c:forEach>
+                    </div>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <div class="banner-empty">등록된 배너가 없습니다</div>
+            </c:otherwise>
+        </c:choose>
     </div>
 
     <!-- 4. 카테고리 바 -->
+    <c:set var="catQs" value=""/>
+    <c:if test="${not empty keyword}">
+        <c:set var="catQs" value="&keyword=${fn:escapeXml(keyword)}"/>
+    </c:if>
     <div class="category-section">
-        <div class="category-bar">
-            <div class="category-item active" onclick="selectCategory(this)">
+        <div class="category-bar" id="categoryBar">
+            <a class="category-item ${empty category ? 'active' : ''}" data-category=""
+               href="/main<c:if test='${not empty keyword}'>?keyword=${fn:escapeXml(keyword)}</c:if>">
+                <span class="cat-icon">🏪</span>
+                <span class="cat-label">전체</span>
+            </a>
+            <a class="category-item ${category == 'CAFE' ? 'active' : ''}" data-category="CAFE"
+               href="/main?category=CAFE${catQs}">
                 <span class="cat-icon">☕</span>
                 <span class="cat-label">카페</span>
-            </div>
-            <div class="category-item" onclick="selectCategory(this)">
+            </a>
+            <a class="category-item ${category == 'FOOD' ? 'active' : ''}" data-category="FOOD"
+               href="/main?category=FOOD${catQs}">
                 <span class="cat-icon">🍽</span>
                 <span class="cat-label">음식점</span>
-            </div>
-            <div class="category-item" onclick="selectCategory(this)">
-                <span class="cat-icon">💇</span>
-                <span class="cat-label">미용</span>
-            </div>
-            <div class="category-item" onclick="selectCategory(this)">
+            </a>
+            <a class="category-item ${category == 'BEAUTY' ? 'active' : ''}" data-category="BEAUTY"
+               href="/main?category=BEAUTY${catQs}">
+                <span class="cat-icon">💄</span>
+                <span class="cat-label">뷰티</span>
+            </a>
+            <a class="category-item ${category == 'SHOPPING' ? 'active' : ''}" data-category="SHOPPING"
+               href="/main?category=SHOPPING${catQs}">
                 <span class="cat-icon">🛍</span>
                 <span class="cat-label">쇼핑</span>
-            </div>
-            <div class="category-item" onclick="selectCategory(this)">
+            </a>
+            <a class="category-item ${category == 'FITNESS' ? 'active' : ''}" data-category="FITNESS"
+               href="/main?category=FITNESS${catQs}">
                 <span class="cat-icon">💪</span>
-                <span class="cat-label">운동</span>
-            </div>
-            <div class="category-item" onclick="selectCategory(this)">
-                <span class="cat-icon">🏪</span>
+                <span class="cat-label">피트니스</span>
+            </a>
+            <a class="category-item ${category == 'CONVENIENCE' ? 'active' : ''}" data-category="CONVENIENCE"
+               href="/main?category=CONVENIENCE${catQs}">
+                <span class="cat-icon">🏬</span>
                 <span class="cat-label">편의점</span>
-            </div>
-            <div class="category-item" onclick="selectCategory(this)">
-                <span class="cat-icon">🔎</span>
-                <span class="cat-label">전체보기</span>
-            </div>
+            </a>
         </div>
     </div>
 
-    <!-- 5. 내 주변 인기 가맹점 -->
-    <section class="main-section">
-        <div class="section-header">
-            <h2 class="section-title">내 주변 인기 가맹점</h2>
-            <span class="section-more">전체보기 &gt;</span>
-        </div>
-        <div class="shop-grid">
-            <div class="shop-card" onclick="goTo('/store')">
-                <div class="shop-image" style="background-color:#FFEAA7;">☕</div>
-                <div class="shop-info">
-                    <span class="shop-tag">카페</span>
-                    <h3 class="shop-name">강남 커피로스터스</h3>
-                    <div class="shop-meta">
-                        <span class="shop-rating">★ 4.8</span>
-                    </div>
-                    <span class="shop-coupon">🎟 쿠폰 2개</span>
-                </div>
-            </div>
-            <div class="shop-card" onclick="goTo('/store')">
-                <div class="shop-image" style="background-color:#DFE6E9;">🍣</div>
-                <div class="shop-info">
-                    <span class="shop-tag">음식점</span>
-                    <h3 class="shop-name">스시 오마카세 나카</h3>
-                    <div class="shop-meta">
-                        <span class="shop-rating">★ 4.6</span>
-                    </div>
-                    <span class="shop-coupon">🎟 쿠폰 1개</span>
-                </div>
-            </div>
-            <div class="shop-card" onclick="goTo('/store')">
-                <div class="shop-image" style="background-color:#FFEEF0;">✂️</div>
-                <div class="shop-info">
-                    <span class="shop-tag">미용</span>
-                    <h3 class="shop-name">헤어살롱 모아</h3>
-                    <div class="shop-meta">
-                        <span class="shop-rating">★ 4.9</span>
-                    </div>
-                    <span class="shop-coupon">🎟 쿠폰 3개</span>
-                </div>
-            </div>
-            <div class="shop-card" onclick="goTo('/store')">
-                <div class="shop-image" style="background-color:#E8F5E9;">🏋</div>
-                <div class="shop-info">
-                    <span class="shop-tag">운동</span>
-                    <h3 class="shop-name">크로스핏 강남</h3>
-                    <div class="shop-meta">
-                        <span class="shop-rating">★ 4.3</span>
-                    </div>
-                    <span class="shop-coupon">🎟 쿠폰 2개</span>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- 5,6,7. 인기 / HOT / 가맹점 목록 (AJAX 갱신 영역) -->
+    <div id="mainSections">
+        <%@ include file="/WEB-INF/views/main/_sections.jsp" %>
+    </div>
 
-    <!-- 6. HOT 쿠폰 -->
-    <section class="main-section">
-        <div class="section-header">
-            <h2 class="section-title">이번 주 HOT 쿠폰 🔥</h2>
-            <span class="section-more">전체보기 &gt;</span>
-        </div>
-        <div class="coupon-scroll">
-
-            <div class="coupon-card">
-                <div class="coupon-upper">
-                    <span class="coupon-shop-name">강남커피</span>
-                    <p class="coupon-benefit">아메리카노<br>1+1</p>
-                </div>
-                <div class="coupon-divider"></div>
-                <div class="coupon-lower">
-                    <span class="coupon-expire">~2025.06.30</span>
-                    <button class="btn-receive" onclick="receiveCoupon(this)">받기</button>
-                </div>
-            </div>
-
-            <div class="coupon-card">
-                <div class="coupon-upper">
-                    <span class="coupon-shop-name">나카스시</span>
-                    <p class="coupon-benefit">런치<br>10% 할인</p>
-                </div>
-                <div class="coupon-divider"></div>
-                <div class="coupon-lower">
-                    <span class="coupon-expire">~2025.06.28</span>
-                    <button class="btn-receive" onclick="receiveCoupon(this)">받기</button>
-                </div>
-            </div>
-
-            <div class="coupon-card">
-                <div class="coupon-upper">
-                    <span class="coupon-shop-name">헤어살롱모아</span>
-                    <p class="coupon-benefit">샴푸<br>무료</p>
-                </div>
-                <div class="coupon-divider"></div>
-                <div class="coupon-lower">
-                    <span class="coupon-expire">~2025.07.05</span>
-                    <button class="btn-receive" onclick="receiveCoupon(this)">받기</button>
-                </div>
-            </div>
-
-            <div class="coupon-card">
-                <div class="coupon-upper">
-                    <span class="coupon-shop-name">크로스핏강남</span>
-                    <p class="coupon-benefit">1일<br>무료체험</p>
-                </div>
-                <div class="coupon-divider"></div>
-                <div class="coupon-lower">
-                    <span class="coupon-expire">~2025.06.25</span>
-                    <button class="btn-receive" onclick="receiveCoupon(this)">받기</button>
-                </div>
-            </div>
-
-            <div class="coupon-card">
-                <div class="coupon-upper">
-                    <span class="coupon-shop-name">편의점GS</span>
-                    <p class="coupon-benefit">1,000원<br>할인</p>
-                </div>
-                <div class="coupon-divider"></div>
-                <div class="coupon-lower">
-                    <span class="coupon-expire">~2025.07.10</span>
-                    <button class="btn-receive" onclick="receiveCoupon(this)">받기</button>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- 7. 새로 들어온 가맹점 -->
-    <section class="main-section">
-        <div class="section-header">
-            <h2 class="section-title">새로 들어온 가맹점 ✨</h2>
-            <span class="section-more">전체보기 &gt;</span>
-        </div>
-        <div class="story-scroll">
-            <div class="story-item">
-                <div class="story-circle" style="background:linear-gradient(135deg,#FFD60A,#FF6B6B);">🍰</div>
-                <span class="story-name">달콤케이크</span>
-            </div>
-            <div class="story-item">
-                <div class="story-circle" style="background:linear-gradient(135deg,#74B9FF,#0984E3);">🍜</div>
-                <span class="story-name">라멘하우스</span>
-            </div>
-            <div class="story-item">
-                <div class="story-circle" style="background:linear-gradient(135deg,#55EFC4,#00B894);">💆</div>
-                <span class="story-name">스파앤웰니스</span>
-            </div>
-            <div class="story-item">
-                <div class="story-circle" style="background:linear-gradient(135deg,#FDCB6E,#E17055);">📚</div>
-                <span class="story-name">북카페 페이지</span>
-            </div>
-            <div class="story-item">
-                <div class="story-circle" style="background:linear-gradient(135deg,#A29BFE,#6C5CE7);">🎮</div>
-                <span class="story-name">플레이존</span>
-            </div>
-        </div>
-    </section>
+    <!-- 로딩 인디케이터 -->
+    <div id="mainLoader" class="main-loader" hidden>
+        <div class="loader-spinner"></div>
+    </div>
 
     <!-- 8. 하단 탭바 -->
     <jsp:include page="/WEB-INF/views/common/_tab_bar.jsp"/>

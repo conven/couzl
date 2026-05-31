@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminCouponMapper">
+
+    <sql id="searchWhere">
+        AND co.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND co.coupon_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="storeId != null">
+            AND co.store_id = #{storeId}
+        </if>
+        <if test="status != null and status != ''">
+            AND co.status = #{status}
+        </if>
+    </sql>
+
+    <sql id="couponColumns">
+        co.coupon_id,
+        co.store_id,
+        co.coupon_name,
+        co.benefit,
+        co.condition_text,
+        co.expire_date,
+        co.total_count,
+        co.issued_count,
+        co.max_per_user,
+        co.status,
+        co.created_at,
+        co.updated_at,
+        s.store_name,
+        r.region_name,
+        CASE WHEN co.total_count = 0 THEN -1
+             ELSE (co.total_count - co.issued_count)
+        END AS remain_count
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.CouponDto">
+        SELECT <include refid="couponColumns"/>
+          FROM tb_coupon co
+          LEFT JOIN tb_store  s ON co.store_id = s.store_id
+          LEFT JOIN tb_region r ON s.region_id = r.region_id
+         WHERE 1=1
+         <include refid="searchWhere"/>
+         ORDER BY co.created_at DESC
+         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_coupon co
+         WHERE 1=1
+         <include refid="searchWhere"/>
+    </select>
+
+    <select id="findByCouponId" resultType="com.couzl.couzl.dto.CouponDto">
+        SELECT <include refid="couponColumns"/>
+          FROM tb_coupon co
+          LEFT JOIN tb_store  s ON co.store_id = s.store_id
+          LEFT JOIN tb_region r ON s.region_id = r.region_id
+         WHERE co.coupon_id  = #{couponId}
+           AND co.is_deleted = 0
+    </select>
+
+    <insert id="insert" parameterType="com.couzl.couzl.dto.CouponDto"
+            useGeneratedKeys="true" keyProperty="couponId">
+        INSERT INTO tb_coupon (store_id, coupon_name, benefit, condition_text,
+                               expire_date, total_count, issued_count, max_per_user,
+                               status, created_by, updated_by)
+        VALUES (#{storeId}, #{couponName}, #{benefit}, #{conditionText},
+                #{expireDate}, #{totalCount}, 0, #{maxPerUser},
+                #{status}, #{createdBy}, #{createdBy})
+    </insert>
+
+    <update id="update" parameterType="com.couzl.couzl.dto.CouponDto">
+        UPDATE tb_coupon
+           SET coupon_name    = #{couponName},
+               benefit        = #{benefit},
+               condition_text = #{conditionText},
+               expire_date    = #{expireDate},
+               total_count    = #{totalCount},
+               max_per_user   = #{maxPerUser},
+               status         = #{status},
+               updated_by     = #{updatedBy},
+               updated_at     = NOW()
+         WHERE coupon_id      = #{couponId}
+           AND is_deleted     = 0
+    </update>
+
+    <update id="updateStatus">
+        UPDATE tb_coupon
+           SET status     = #{status},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE coupon_id  = #{couponId}
+           AND is_deleted = 0
+    </update>
+
+    <select id="findActiveStores" resultType="com.couzl.couzl.dto.StoreDto">
+        SELECT s.store_id,
+               s.store_name,
+               r.region_name
+          FROM tb_store s
+          LEFT JOIN tb_region r ON s.region_id = r.region_id
+         WHERE s.status     = 'ACTIVE'
+           AND s.is_deleted = 0
+         ORDER BY s.store_name
+    </select>
+
+    <select id="findIssuedUsers" resultType="com.couzl.couzl.dto.UserCouponDto">
+        SELECT uc.user_coupon_id,
+               uc.user_id,
+               uc.coupon_id,
+               uc.coupon_code,
+               uc.status,
+               uc.used_at,
+               uc.created_at,
+               u.login_id AS user_login_id,
+               u.nickname AS user_nickname,
+               u.email    AS user_email
+          FROM tb_user_coupon uc
+          JOIN tb_user u ON uc.user_id = u.user_id
+         WHERE uc.coupon_id  = #{couponId}
+           AND uc.is_deleted = 0
+         ORDER BY uc.created_at DESC
+    </select>
+
+</mapper>

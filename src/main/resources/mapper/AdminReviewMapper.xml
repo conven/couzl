@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.couzl.couzl.mapper.AdminReviewMapper">
+
+    <sql id="searchWhere">
+        AND rv.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (u.nickname LIKE CONCAT('%', #{keyword}, '%')
+              OR rv.content LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="storeId != null">
+            AND rv.store_id = #{storeId}
+        </if>
+        <if test="rating != null">
+            AND rv.rating = #{rating}
+        </if>
+        <if test="status != null and status != ''">
+            AND rv.status = #{status}
+        </if>
+    </sql>
+
+    <sql id="reviewColumns">
+        rv.review_id,
+        rv.user_id,
+        rv.store_id,
+        rv.user_coupon_id,
+        rv.rating,
+        rv.content,
+        rv.status,
+        rv.created_at,
+        rv.updated_at,
+        u.nickname,
+        u.login_id,
+        s.store_name,
+        c.coupon_name
+    </sql>
+
+    <select id="findAll" resultType="com.couzl.couzl.dto.ReviewDto">
+        SELECT <include refid="reviewColumns"/>
+          FROM tb_review rv
+          LEFT JOIN tb_user        u  ON rv.user_id        = u.user_id
+          LEFT JOIN tb_store       s  ON rv.store_id       = s.store_id
+          LEFT JOIN tb_user_coupon uc ON rv.user_coupon_id = uc.user_coupon_id
+          LEFT JOIN tb_coupon      c  ON uc.coupon_id      = c.coupon_id
+         WHERE 1=1
+         <include refid="searchWhere"/>
+         ORDER BY rv.created_at DESC
+         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_review rv
+          LEFT JOIN tb_user u ON rv.user_id = u.user_id
+         WHERE 1=1
+         <include refid="searchWhere"/>
+    </select>
+
+    <select id="findByReviewId" resultType="com.couzl.couzl.dto.ReviewDto">
+        SELECT <include refid="reviewColumns"/>
+          FROM tb_review rv
+          LEFT JOIN tb_user        u  ON rv.user_id        = u.user_id
+          LEFT JOIN tb_store       s  ON rv.store_id       = s.store_id
+          LEFT JOIN tb_user_coupon uc ON rv.user_coupon_id = uc.user_coupon_id
+          LEFT JOIN tb_coupon      c  ON uc.coupon_id      = c.coupon_id
+         WHERE rv.review_id  = #{reviewId}
+           AND rv.is_deleted = 0
+    </select>
+
+    <update id="updateStatus">
+        UPDATE tb_review
+           SET status     = #{status},
+               updated_by = #{updatedBy},
+               updated_at = NOW()
+         WHERE review_id  = #{reviewId}
+           AND is_deleted = 0
+    </update>
+
+    <select id="findImagesByReviewId" resultType="com.couzl.couzl.dto.ReviewImageDto">
+        SELECT review_image_id,
+               review_id,
+               image_type,
+               sort_order,
+               created_at
+          FROM tb_review_image
+         WHERE review_id  = #{reviewId}
+           AND is_deleted = 0
+         ORDER BY sort_order, review_image_id
+    </select>
+
+    <select id="findImage" resultType="com.couzl.couzl.dto.ReviewImageDto">
+        SELECT review_image_id,
+               review_id,
+               image,
+               image_type
+          FROM tb_review_image
+         WHERE review_image_id = #{reviewImageId}
+           AND is_deleted      = 0
+    </select>
+
+</mapper>
